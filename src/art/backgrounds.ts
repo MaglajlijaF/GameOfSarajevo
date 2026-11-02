@@ -268,19 +268,22 @@ const terraces: Backdrop = (p, t, rng) => {
 
 /** Stadium stands with crowd dots and floodlights (Koševo). */
 const stadium: Backdrop = (p, t, rng) => {
-  for (let tier = 0; tier < 5; tier++) {
-    const y = GROUND - 40 - tier * 22;
-    p.rect(0, y, BG_W, 22, tier % 2 ? t.mid : shade(t.mid, -0.1));
-    for (let i = 0; i < 260; i++) p.set(rng.int(0, BG_W - 1), y + rng.int(3, 18), rng.pick(['#e8483a', '#f4f4f4', '#3a6ad8', '#f2d64b', '#5ad05a']));
+  for (let tier = 0; tier < 4; tier++) {
+    const y = GROUND - 30 - (tier + 1) * 20;
+    p.rect(0, y, BG_W, 20, tier % 2 ? t.mid : shade(t.mid, -0.1));
+    p.rect(0, y, BG_W, 1, shade(t.mid, 0.25));
+    for (let i = 0; i < 220; i++) p.set(rng.int(0, BG_W - 1), y + rng.int(3, 17), rng.pick(['#e8483a', '#f4f4f4', '#3a6ad8', '#f2d64b', '#5ad05a']));
   }
-  p.rect(0, GROUND - 160, BG_W, 6, t.midDetail);
-  for (let x = 40; x < BG_W; x += 200) {
-    p.rect(x, GROUND - 260, 4, 100, '#5a5a62');
-    p.rect(x - 14, GROUND - 272, 32, 14, '#3a3a42');
-    for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) p.rect(x - 12 + i * 8, GROUND - 270 + j * 6, 6, 4, '#ffffe0');
+  p.rect(0, GROUND - 116, BG_W, 6, t.midDetail);
+  for (let x = 60; x < BG_W; x += 200) {
+    p.rect(x, GROUND - 230, 4, 114, '#5a5a62');
+    p.rect(x - 14, GROUND - 242, 32, 14, '#3a3a42');
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) p.rect(x - 12 + i * 8, GROUND - 240 + j * 6, 6, 4, '#ffffe0');
   }
-  p.rect(0, GROUND - 40, BG_W, 40, t.groundDark);
-  p.rect(0, GROUND - 40, BG_W, 2, '#ffffff');
+  // running track with lane lines
+  p.rect(0, GROUND - 30, BG_W, 30, t.ground);
+  for (let l = 0; l < 4; l++) p.rect(0, GROUND - 28 + l * 7, BG_W, 1, '#f4f4f4');
+  for (let x = 0; x < BG_W; x += 160) p.rect(x, GROUND - 28, 2, 22, '#f4f4f4');
 };
 
 /** Airport: hangars, control tower, parked planes, windsock (Dobrinja is next to the airport). */

@@ -171,7 +171,7 @@ const STYLES = {
   alipasino_polje:{ pits: 2, tiers: 3, segs: 3, ladders: 2, blocks: 1 },
   dobrinja:       { pits: 3, tiers: 3, segs: 4, ladders: 1, blocks: 1 },
 };
-const TIER_ROWS = [16, 12, 8, 4];
+const TIER_ROWS = [16, 12, 8, 5];
 
 function genArena(stageId, wave, st) {
   const r = rng(stageId.length * 7919 + wave * 104729 + stageId.charCodeAt(0) * 31);
