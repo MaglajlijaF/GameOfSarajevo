@@ -15,7 +15,7 @@
     "test": "vitest run",
     "smoke": "node scripts/smoke.mjs",
     "playthrough": "node scripts/playthrough.mjs",
-    "dist:win": "npm run build && electron-builder --win portable nsis"
+    "dist:win": "npm run build && electron-builder --win --x64 --publish never"
   },
   "build": {
     "appId": "ba.gameofsarajevo.game",
@@ -26,13 +26,37 @@
       "package.json"
     ],
     "directories": {
-      "output": "release"
+      "output": "release",
+      "buildResources": "build"
     },
+    "icon": "build/icon.png",
     "win": {
       "target": [
-        "nsis",
-        "portable"
-      ]
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Game of Sarajevo",
+      "artifactName": "GameOfSarajevo-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "GameOfSarajevo-Portable-${version}.${ext}"
     }
   },
   "devDependencies": {
@@ -43,5 +67,6 @@
     "typescript": "5.9",
     "vite": "^6.4.5",
     "vitest": "^3.2.7"
-  }
+  },
+  "author": "Faris Maglajlija"
 }
