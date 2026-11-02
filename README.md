@@ -19,6 +19,17 @@ npm run build:web && node scripts/campaign.mjs  # plays all 13 stages and checks
 
 The Windows `.exe` packaging (`npm run dist:win`) is configured but is scheduled for milestone 4.
 
+## Install on Windows / share with friends
+
+Every push builds the game on GitHub (Actions → **Build game** → the latest run → *Artifacts*):
+
+- **GameOfSarajevo-Windows**: `GameOfSarajevo-Setup-x.y.z.exe` installs the game with a desktop and Start-menu shortcut. `GameOfSarajevo-Portable-x.y.z.exe` runs without installing.
+- **GameOfSarajevo-Web**: the browser version. Upload this zip to itch.io as an HTML game, and friends can play from a link.
+
+The exe isn't code-signed, so Windows SmartScreen shows "Windows protected your PC". Click **More info → Run anyway**. Saves are stored in `%APPDATA%\Game of Sarajevo\save.json`.
+
+To build locally on Windows instead, run `npm run dist:win`. The output goes in `release/`. To regenerate the icon, run `npm run build:web && node scripts/make-icon.mjs`.
+
 ## Controls (rebindable in Postavke / Settings)
 
 | Action | Default |
