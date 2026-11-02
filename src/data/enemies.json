@@ -1,0 +1,10 @@
+{
+  "prodavac": { "sprite": "enemy_prodavac", "behavior": "walker", "hp": 22, "damage": 10, "speed": 46, "xp": 3,
+    "params": { "attackRange": 20, "attackCooldown": 1.3, "jumpPower": 300 } },
+  "golubar": { "sprite": "enemy_golubar", "behavior": "thrower", "hp": 16, "damage": 8, "speed": 38, "xp": 4,
+    "projectile": "corn", "params": { "keepDistance": 130, "throwCooldown": 2.2, "throwSpeed": 190, "jumpPower": 280 } },
+  "dostavljac": { "sprite": "enemy_dostavljac", "behavior": "jumper", "hp": 18, "damage": 9, "speed": 70, "xp": 4,
+    "params": { "hopCooldown": 1.1, "hopPower": 340, "hopSpeed": 120 } },
+  "nosac": { "sprite": "enemy_nosac", "behavior": "charger", "hp": 46, "damage": 14, "speed": 34, "xp": 7,
+    "params": { "chargeRange": 170, "chargeSpeed": 210, "windup": 0.55, "chargeTime": 0.9, "chargeCooldown": 2.4, "jumpPower": 260 } }
+}

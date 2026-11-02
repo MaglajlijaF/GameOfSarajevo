@@ -1,0 +1,46 @@
+{
+  "name": "game-of-sarajevo",
+  "productName": "Game of Sarajevo",
+  "version": "0.1.0",
+  "description": "Retro pixel-art combat platformer set in Sarajevo",
+  "private": true,
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build:web": "tsc --noEmit && vite build",
+    "build:electron": "esbuild electron/main.ts electron/preload.ts --bundle --platform=node --format=cjs --external:electron --outdir=dist-electron",
+    "build": "npm run build:web && npm run build:electron",
+    "start": "npm run build && electron .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "smoke": "node scripts/smoke.mjs",
+    "dist:win": "npm run build && electron-builder --win portable nsis"
+  },
+  "build": {
+    "appId": "ba.gameofsarajevo.game",
+    "productName": "Game of Sarajevo",
+    "files": [
+      "dist/**",
+      "dist-electron/**",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^38.8.6",
+    "electron-builder": "^26.18.0",
+    "esbuild": "^0.25.12",
+    "phaser": "^3.90.0",
+    "typescript": "5.9",
+    "vite": "^6.4.5",
+    "vitest": "^3.2.7"
+  }
+}

@@ -1,0 +1,4 @@
+[
+  { "id": "amar", "gender": "m", "sprite": "player_amar",
+    "recipe": { "skin": "skin2", "hair": "hairBrown", "hairStyle": "short", "shirt": "blue", "shirt2": "blueDark", "pants": "denim", "shoes": "white", "accessory": "scarf", "accessoryColor": "red" } }
+]

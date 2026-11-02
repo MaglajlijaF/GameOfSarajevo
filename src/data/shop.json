@@ -1,0 +1,9 @@
+{
+  "defaultStartWeapon": "rucka",
+  "upgrades": [
+    { "id": "health", "baseCost": 60, "costGrowth": 1.45, "maxLevel": 10, "perLevel": 12 },
+    { "id": "damage", "baseCost": 80, "costGrowth": 1.5, "maxLevel": 10, "perLevel": 0.08 },
+    { "id": "speed", "baseCost": 70, "costGrowth": 1.55, "maxLevel": 6, "perLevel": 0.05 },
+    { "id": "xp", "baseCost": 90, "costGrowth": 1.5, "maxLevel": 8, "perLevel": 0.1 }
+  ]
+}

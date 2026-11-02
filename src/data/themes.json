@@ -1,0 +1,9 @@
+{
+  "kovaci": {
+    "sky": ["#5fb4f0", "#ffd9a0"], "far": "#4d8a5a", "farDetail": "#6fae6a",
+    "mid": "#f0e2c4", "midDetail": "#8a5a3a", "roof": "#c8503a",
+    "groundTop": "#b8b0a0", "ground": "#7d7466", "groundDark": "#5a5246",
+    "platform": "#9a6a3a", "platformDark": "#6a4422",
+    "hazardStyle": "coals", "backdrop": "oldtown"
+  }
+}

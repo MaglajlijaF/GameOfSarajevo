@@ -1,0 +1,9 @@
+{
+  "kazandzija": {
+    "sprite": "boss_kazandzija", "hp": 950, "damage": 18, "xp": 40, "projectile": "pot", "summon": "prodavac",
+    "phases": [
+      { "hpBelow": 1.0, "attacks": ["slam", "charge", "volley"], "pause": 1.2, "speed": 55 },
+      { "hpBelow": 0.5, "attacks": ["rain", "shockwave", "leap", "charge", "summon"], "pause": 0.8, "speed": 75 }
+    ]
+  }
+}

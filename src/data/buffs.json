@@ -1,0 +1,5 @@
+{
+  "strength": { "color": "#e8483a", "damageMult": 0.15 },
+  "speed": { "color": "#3ac8e8", "speedMult": 0.08, "attackSpeedMult": 0.12 },
+  "durability": { "color": "#5ad05a", "maxHp": 20, "heal": 25 }
+}
