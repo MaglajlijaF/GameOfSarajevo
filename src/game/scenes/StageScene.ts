@@ -20,6 +20,7 @@ import type { StageDef } from '../../core/types';
 import { audio } from '../../audio/audio';
 import tuning from '../../data/tuning.json';
 import type { World } from '../world';
+import { stageScale } from '../../core/difficulty';
 
 const TS = 16;
 
@@ -58,6 +59,8 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
   private ended = false;
   private currentSection: Section | null = null;
   private homingT = 0;
+  /** Stage difficulty applied to every enemy and the boss. */
+  diff = { hp: 1, dmg: 1, aggro: 1 };
 
   constructor() { super('Stage'); }
 
@@ -82,6 +85,7 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
   create(): void {
     const st = this.stage;
     this.plan = buildLevel(st, G.data.layouts);
+    this.diff = stageScale(st);
     const W = this.plan.width * TS, H = LEVEL_H * TS;
     this.physics.world.gravity.y = tuning.gravity;
     this.physics.world.setBounds(0, 0, W, H + 64);
@@ -194,15 +198,21 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     }, this);
     this.physics.add.collider(this.eProj, this.layer, undefined, (o, t) => {
       const p = o as Projectile;
-      if (p.motion !== 'wave' && !isPlatform(t)) { this.puff(p.x, p.y, 3, 0xd8cfbf); p.kill(); }
+      if (p.motion === 'roll') return true;
+      if (p.motion === 'wave' || p.motion === 'trap') return false;
+      if (p.motion === 'bomb' && (p.body2.velocity.y > 0 || !isPlatform(t))) { this.detonate(p); return false; }
+      if (!isPlatform(t)) { this.puff(p.x, p.y, 3, 0xd8cfbf); p.kill(); }
       return false;
     }, this);
     this.physics.add.overlap(this.pProj, this.enemies, (a, b) => this.projHit(a as Projectile, b as unknown as Enemy));
-    this.physics.add.overlap(this.eProj, this.player, (a) => {
-      const pr = (a instanceof Projectile ? a : null);
+    // Phaser passes (sprite, groupChild) for sprite-vs-group overlaps regardless of
+    // argument order, so find the projectile among both arguments.
+    this.physics.add.overlap(this.eProj, this.player, (a, b) => {
+      const pr = a instanceof Projectile ? a : b instanceof Projectile ? b : null;
       if (!pr || !pr.active) return;
+      if (pr.motion === 'bomb' || pr.range > 0) { this.detonate(pr); return; }
       if (this.player.hurt(pr.damage, pr.x)) this.shake(0.006, 120);
-      if (pr.motion !== 'wave') pr.kill();
+      if (pr.motion !== 'wave' && pr.motion !== 'trap') pr.kill();
     });
     this.physics.add.overlap(this.player, this.enemies, (_p, e) => {
       const en = e as unknown as Enemy;
@@ -237,7 +247,8 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     if (!e.vulnerable) return;
     const dmg = Math.max(1, Math.round(base * this.player.stats.damageMult * (0.9 + Math.random() * 0.2)));
     const dir = Math.sign(e.x - fromX) || 1;
-    const killed = e.hurt(dmg, dir * knockback, -knockback * 0.6);
+    const killed = e.hurt(dmg, dir * knockback, -knockback * 0.6, fromX);
+    if (e.blocked) { this.number(e.x, e.y - 12, G.t('hud.blocked'), 0x9aa0b4); this.sparkAt(e.x + Math.sign(fromX - e.x) * 6, e.y, 0xc0c4cc, 3); audio.play('deny'); return; }
     this.number(e.x, e.y - 12, String(dmg), chained ? 0xf2d64b : 0xffffff);
     this.sparkAt(e.x, e.y, 0xffffff, 4);
     audio.play('hit');
@@ -287,14 +298,73 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     else this.firePlayer(cfg);
   }
 
-  spawnEnemy(id: string, x: number, y: number): void {
+  spawnEnemy(id: string, x: number, y: number): Enemy | null {
     const def = G.data.enemies[id];
-    if (!def) return;
+    if (!def) return null;
     const e = this.enemies.get(x, y) as Enemy | null;
-    if (!e) return;
-    e.spawn(def, x, y, this.stage.difficulty);
+    if (!e) return null;
+    e.spawn(def, x, y, this.diff);
     this.puff(x, y, 8, 0xffffff);
+    return e;
   }
+
+  fireHostile(cfg: ProjConfig): void {
+    const p = this.eProj.get(cfg.x, cfg.y) as Projectile | null;
+    p?.fire(cfg);
+  }
+
+  /** Bombs and meteors: area damage where they land (range = blast radius). */
+  private detonate(p: Projectile) {
+    if (!p.active) return;
+    this.explode(p.x, p.y, Math.max(24, p.range), p.damage, 0xffb060);
+    p.kill();
+  }
+
+  explode(x: number, y: number, radius: number, damage: number, tint = 0xffb060): void {
+    this.ring(x, y, radius, tint);
+    this.puff(x, y, 8, tint);
+    this.shake(0.005, 120);
+    audio.play('slam');
+    if (Phaser.Math.Distance.Between(x, y, this.player.x, this.player.y) <= radius + 8) this.player.hurt(damage, x);
+  }
+
+  trap(x: number, y: number, ms: number, damage: number, tint = 0xb050ff): void {
+    const p = this.eProj.get(x, y) as Projectile | null;
+    if (!p) return;
+    p.fire({ texture: 'fx_trap', x, y, vx: 0, vy: 0, damage, life: ms / 1000, motion: 'trap', pierce: 999, tint });
+    p.setDepth(7);
+  }
+
+  laser(y: number, telegraphMs: number, activeMs: number, damage: number, tint = 0xff4a3a): void {
+    const { left, right } = this.arenaBounds();
+    const g = this.add.graphics().setDepth(40);
+    g.fillStyle(tint, 0.35).fillRect(left - 16, y - 1, right - left + 32, 2);
+    this.tweens.add({ targets: g, alpha: 0.2, duration: 90, yoyo: true, repeat: Math.floor(telegraphMs / 180) });
+    this.time.delayedCall(telegraphMs, () => {
+      g.destroy();
+      if (this.ended) return;
+      const beam = this.add.rectangle((left + right) / 2, y, right - left + 32, 12, tint, 0.85).setDepth(40);
+      const core = this.add.rectangle((left + right) / 2, y, right - left + 32, 4, 0xffffff, 1).setDepth(41);
+      audio.play('pulse');
+      this.shake(0.004, activeMs);
+      const ev = this.time.addEvent({ delay: 50, repeat: Math.floor(activeMs / 50), callback: () => {
+        if (Math.abs(this.player.y - y) < 14) this.player.hurt(damage, this.player.x + (this.player.flipX ? 10 : -10));
+      } });
+      this.tweens.add({ targets: [beam, core], alpha: 0, delay: activeMs, duration: 120, onComplete: () => { beam.destroy(); core.destroy(); ev.remove(); } });
+    });
+  }
+
+  aimLine(x: number, y: number, angle: number, ms: number, tint = 0xff4a3a): void {
+    const g = this.add.graphics().setDepth(40);
+    g.lineStyle(1, tint, 0.8).lineBetween(x, y, x + Math.cos(angle) * 500, y + Math.sin(angle) * 500);
+    this.tweens.add({ targets: g, alpha: 0.15, duration: 80, yoyo: true, repeat: Math.floor(ms / 160), onComplete: () => g.destroy() });
+  }
+
+  enemiesNear(x: number, y: number, r: number): Enemy[] {
+    return this.targetsCache.filter((e) => !e.isBoss && Phaser.Math.Distance.Between(x, y, e.x, e.y) <= r);
+  }
+
+  groundY(): number { return 20 * TS; }
 
   shake(intensity: number, ms = 150): void { this.cameras.main.shake(ms, intensity); }
 
@@ -388,13 +458,13 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     this.add.existing(boss);
     this.physics.add.existing(boss);
     this.enemies.add(boss);
-    boss.spawnBoss(def, pos.x * TS, pos.y * TS - 16, this.stage.difficulty);
-    boss.onPhaseChange = () => this.hud.flash(G.t(`boss.${def.id}`), '!!!', 900, COLORS.red);
+    boss.spawnBoss(def, pos.x * TS, pos.y * TS - 16, this.diff);
+    boss.onPhaseChange = (ph) => this.hud.flash(G.t(`boss.${def.id}`), G.t('hud.phase', { n: ph + 1 }), 1100, COLORS.red);
     this.boss = boss;
     this.hud.setBoss(G.t(`boss.${def.id}`));
     this.hud.flash(G.t(`boss.${def.id}`), G.t(`boss.${def.id}.intro`), 1800, COLORS.red);
     audio.play('boss');
-    audio.playMusic({ ...this.stage.music, seed: this.stage.music.seed + 1, tempo: this.stage.music.tempo + 24 });
+    audio.playMusic(this.stage.music, true);
   }
 
   private onKill(e: Enemy) {
@@ -592,6 +662,15 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
           break;
         }
         case 'homing': {
+          if (!friendly) {
+            const cur = Math.atan2(b.velocity.y, b.velocity.x);
+            const want = Phaser.Math.Angle.Between(p.x, p.y, this.player.x, this.player.y);
+            const na = Phaser.Math.Angle.RotateTo(cur, want, p.turn * dt);
+            const sp = Math.max(p.speed, 90);
+            b.setVelocity(Math.cos(na) * sp, Math.sin(na) * sp);
+            if (p.life <= 0.05 && p.range > 0) this.detonate(p);
+            break;
+          }
           if (retarget && this.targetsCache.length) {
             let best: Enemy | null = null; let bd = 260;
             for (const e of this.targetsCache) { const d = Phaser.Math.Distance.Between(p.x, p.y, e.x, e.y); if (d < bd) { bd = d; best = e; } }
@@ -608,6 +687,15 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
         }
         case 'wave':
           p.setScale(1 + Math.sin(p.life * 30) * 0.15, 1.2);
+          break;
+        case 'trap':
+          p.setAlpha(p.life < 1 ? p.life : 0.85 + Math.sin(p.life * 12) * 0.15);
+          break;
+        case 'sine':
+          b.setVelocityY(Math.cos(p.life * 10) * 90);
+          break;
+        case 'bomb':
+          if (p.life <= 0.05) this.detonate(p);
           break;
         default:
           break;

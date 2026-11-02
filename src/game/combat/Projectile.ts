@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import type { Enemy } from '../entities/Enemy';
 
-export type ProjMotion = 'straight' | 'arc' | 'boomerang' | 'homing' | 'bouncer' | 'wave';
+export type ProjMotion = 'straight' | 'arc' | 'boomerang' | 'homing' | 'bouncer' | 'wave' | 'bomb' | 'trap' | 'roll' | 'sine';
 
 export interface ProjConfig {
   texture: string;
@@ -48,7 +48,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
     body.setAllowGravity(!!c.gravity);
     body.setGravityY(c.gravity ? c.gravity - 900 : 0); // world gravity is 900
     body.setVelocity(c.vx, c.vy);
-    body.setBounce(c.motion === 'bouncer' ? 0.7 : 0);
+    body.setBounce(c.motion === 'bouncer' ? 0.7 : c.motion === 'roll' ? 0.35 : 0);
     body.setSize(Math.max(4, this.width - 2), Math.max(4, this.height - 2));
     this.damage = c.damage;
     this.life = c.life;

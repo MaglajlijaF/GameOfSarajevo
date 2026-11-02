@@ -1,9 +1,285 @@
 {
-  "kovaci": {
-    "sky": ["#5fb4f0", "#ffd9a0"], "far": "#4d8a5a", "farDetail": "#6fae6a",
-    "mid": "#f0e2c4", "midDetail": "#8a5a3a", "roof": "#c8503a",
-    "groundTop": "#b8b0a0", "ground": "#7d7466", "groundDark": "#5a5246",
-    "platform": "#9a6a3a", "platformDark": "#6a4422",
-    "hazardStyle": "coals", "backdrop": "oldtown"
-  }
+ "kovaci": {
+  "sky": [
+   "#5fb4f0",
+   "#ffd9a0"
+  ],
+  "far": "#4d8a5a",
+  "farDetail": "#6fae6a",
+  "mid": "#f0e2c4",
+  "midDetail": "#8a5a3a",
+  "roof": "#c8503a",
+  "groundTop": "#b8b0a0",
+  "ground": "#7d7466",
+  "groundDark": "#5a5246",
+  "platform": "#9a6a3a",
+  "platformDark": "#6a4422",
+  "hazardStyle": "coals",
+  "backdrop": "oldtown",
+  "groundStyle": "cobble",
+  "platformStyle": "wood"
+ },
+ "bistrik": {
+  "sky": [
+   "#f08a5a",
+   "#ffd27a"
+  ],
+  "far": "#5a7a4a",
+  "farDetail": "#7a9a5a",
+  "mid": "#e8d8c0",
+  "midDetail": "#6a4a3a",
+  "roof": "#a8402a",
+  "groundTop": "#c8c0b0",
+  "ground": "#8a8478",
+  "groundDark": "#5e584e",
+  "platform": "#7a5a3a",
+  "platformDark": "#4a3422",
+  "hazardStyle": "thorns",
+  "backdrop": "hillside",
+  "groundStyle": "stone",
+  "platformStyle": "wood",
+  "accent": "#e85a8a"
+ },
+ "skenderija": {
+  "sky": [
+   "#a8c8e8",
+   "#e8f0f8"
+  ],
+  "far": "#7a8a9a",
+  "farDetail": "#f4f4f4",
+  "mid": "#c8ccd4",
+  "midDetail": "#5a6270",
+  "roof": "#8a92a0",
+  "groundTop": "#e8f0f8",
+  "ground": "#a0a8b4",
+  "groundDark": "#6a7280",
+  "platform": "#8a94a4",
+  "platformDark": "#4a5260",
+  "hazardStyle": "ice",
+  "backdrop": "plaza",
+  "groundStyle": "concrete",
+  "platformStyle": "metal",
+  "snow": true,
+  "accent": "#4aa3df",
+  "hazardDamage": 14
+ },
+ "marijin_dvor": {
+  "sky": [
+   "#3a3a7a",
+   "#e88a6a"
+  ],
+  "far": "#4a5a6a",
+  "farDetail": "#6a7a8a",
+  "mid": "#5a7a9a",
+  "midDetail": "#2a3a4a",
+  "roof": "#3a4a5a",
+  "groundTop": "#8a8a92",
+  "ground": "#4a4a52",
+  "groundDark": "#2e2e36",
+  "platform": "#7a8290",
+  "platformDark": "#3a4250",
+  "hazardStyle": "sparks",
+  "backdrop": "modern",
+  "groundStyle": "asphalt",
+  "platformStyle": "metal",
+  "accent": "#7ad0f0"
+ },
+ "grbavica": {
+  "sky": [
+   "#8a9aaa",
+   "#c8d0d8"
+  ],
+  "far": "#5a6a5a",
+  "farDetail": "#7a8a7a",
+  "mid": "#d8d0c0",
+  "midDetail": "#7a7268",
+  "roof": "#8a8278",
+  "groundTop": "#9a9a9a",
+  "ground": "#5a5a5e",
+  "groundDark": "#3a3a3e",
+  "platform": "#a0a0a4",
+  "platformDark": "#5a5a60",
+  "hazardStyle": "tar",
+  "backdrop": "blocks",
+  "groundStyle": "asphalt",
+  "platformStyle": "concrete",
+  "accent": "#4a8ad8"
+ },
+ "malta": {
+  "sky": [
+   "#0e1430",
+   "#3a3a6a"
+  ],
+  "far": "#1e2a3a",
+  "farDetail": "#2e3a4a",
+  "mid": "#5a5050",
+  "midDetail": "#2a2424",
+  "roof": "#3a3030",
+  "groundTop": "#6a6a70",
+  "ground": "#3a3a40",
+  "groundDark": "#222228",
+  "platform": "#6a7280",
+  "platformDark": "#3a4250",
+  "hazardStyle": "sparks",
+  "backdrop": "industrial",
+  "groundStyle": "asphalt",
+  "platformStyle": "metal",
+  "night": true,
+  "accent": "#f2d64b"
+ },
+ "cengic_vila": {
+  "sky": [
+   "#6ab8e8",
+   "#e8f4c8"
+  ],
+  "far": "#4a8a4a",
+  "farDetail": "#6aaa5a",
+  "mid": "#e8c8a0",
+  "midDetail": "#8a6a4a",
+  "roof": "#9a6a4a",
+  "groundTop": "#c0b8a8",
+  "ground": "#8a8274",
+  "groundDark": "#5e584e",
+  "platform": "#d83a3a",
+  "platformDark": "#8a2028",
+  "hazardStyle": "water",
+  "backdrop": "blocks",
+  "groundStyle": "concrete",
+  "platformStyle": "awning",
+  "accent": "#f2d64b"
+ },
+ "hrasno": {
+  "sky": [
+   "#4a3a6a",
+   "#f0a070"
+  ],
+  "far": "#3a4a4a",
+  "farDetail": "#5a6a6a",
+  "mid": "#c0b8b0",
+  "midDetail": "#5a5250",
+  "roof": "#6a6260",
+  "groundTop": "#9a9a98",
+  "ground": "#5e5c5a",
+  "groundDark": "#3a3836",
+  "platform": "#8a8a90",
+  "platformDark": "#4a4a52",
+  "hazardStyle": "paint",
+  "backdrop": "towers",
+  "groundStyle": "concrete",
+  "platformStyle": "metal",
+  "accent": "#b48ae0",
+  "hazardDamage": 18
+ },
+ "pofalici": {
+  "sky": [
+   "#4aa8f0",
+   "#c8f0ff"
+  ],
+  "far": "#3a7a3a",
+  "farDetail": "#5a9a4a",
+  "mid": "#e8e0c8",
+  "midDetail": "#6a5a3a",
+  "roof": "#b84a2a",
+  "groundTop": "#6ab04a",
+  "ground": "#7a5a3a",
+  "groundDark": "#5a3e26",
+  "platform": "#8a6a3a",
+  "platformDark": "#5a4022",
+  "hazardStyle": "thorns",
+  "backdrop": "hillside",
+  "groundStyle": "grass",
+  "platformStyle": "wood",
+  "accent": "#f2d64b",
+  "hazardDamage": 20
+ },
+ "ciglane": {
+  "sky": [
+   "#e8a85a",
+   "#f8e0b0"
+  ],
+  "far": "#6a7a4a",
+  "farDetail": "#8a9a5a",
+  "mid": "#b8604a",
+  "midDetail": "#6a3020",
+  "roof": "#8a3a2a",
+  "groundTop": "#c87050",
+  "ground": "#a04a3a",
+  "groundDark": "#6a2a20",
+  "platform": "#b05a40",
+  "platformDark": "#6a3020",
+  "hazardStyle": "cement",
+  "backdrop": "terraces",
+  "groundStyle": "brick",
+  "platformStyle": "brick",
+  "accent": "#f2d64b",
+  "hazardDamage": 20
+ },
+ "kosevo": {
+  "sky": [
+   "#0a1028",
+   "#2a3a6a"
+  ],
+  "far": "#1a2a2a",
+  "farDetail": "#2a3a3a",
+  "mid": "#8a8a92",
+  "midDetail": "#4a4a52",
+  "roof": "#5a5a62",
+  "groundTop": "#d84a3a",
+  "ground": "#a83a2e",
+  "groundDark": "#6a2420",
+  "platform": "#9a9aa2",
+  "platformDark": "#5a5a62",
+  "hazardStyle": "water",
+  "backdrop": "stadium",
+  "groundStyle": "track",
+  "platformStyle": "concrete",
+  "night": true,
+  "accent": "#ffffff",
+  "hazardDamage": 22
+ },
+ "alipasino_polje": {
+  "sky": [
+   "#1a0e2a",
+   "#5a2a5a"
+  ],
+  "far": "#2a2030",
+  "farDetail": "#3a3040",
+  "mid": "#a8a0a8",
+  "midDetail": "#4a4450",
+  "roof": "#5a5460",
+  "groundTop": "#e0a050",
+  "ground": "#4a4448",
+  "groundDark": "#2e2a2e",
+  "platform": "#7a7a88",
+  "platformDark": "#44444e",
+  "hazardStyle": "paint",
+  "backdrop": "blocks",
+  "groundStyle": "asphalt",
+  "platformStyle": "metal",
+  "night": true,
+  "accent": "#ff5ac8",
+  "hazardDamage": 24
+ },
+ "dobrinja": {
+  "sky": [
+   "#3a8ae8",
+   "#e8f4ff"
+  ],
+  "far": "#5a7a6a",
+  "farDetail": "#7a9a8a",
+  "mid": "#d8dce4",
+  "midDetail": "#5a6270",
+  "roof": "#9aa2b0",
+  "groundTop": "#e8e8e0",
+  "ground": "#5a5c60",
+  "groundDark": "#3a3c40",
+  "platform": "#b0b8c4",
+  "platformDark": "#6a7280",
+  "hazardStyle": "jet",
+  "backdrop": "airport",
+  "groundStyle": "tarmac",
+  "platformStyle": "metal",
+  "accent": "#f2d64b",
+  "hazardDamage": 26
+ }
 }

@@ -3,7 +3,7 @@
 A 2D retro pixel-art, side-view combat platformer set in Sarajevo's neighbourhoods. Built with
 TypeScript, Phaser 3 and Electron, as a Windows desktop game played with keyboard and mouse.
 
-**Status: Milestone 1 (vertical slice), ready for playtesting.**
+**Status: Milestone 3 (all 13 stages, characters, bosses), ready for playtesting.**
 
 ## Run it
 
@@ -14,6 +14,7 @@ npm start              # builds and launches the Electron desktop app (save goes
 npm test               # unit tests (vitest)
 npm run build:web && npm run smoke        # headless browser smoke test (movement, menus)
 npm run build:web && npm run playthrough  # scripted full Kovači run + 45-enemy stress test
+npm run build:web && node scripts/campaign.mjs  # plays all 13 stages and checks every boss fights back
 ```
 
 The Windows `.exe` packaging (`npm run dist:win`) is configured but is scheduled for milestone 4.
@@ -31,20 +32,42 @@ The Windows `.exe` packaging (`npm run dist:win`) is configured but is scheduled
 | Pause | Esc |
 | Toggle fullscreen | F11 (desktop app), or Settings |
 
-## What milestone 1 contains
+## Campaign
 
-- Main menu with a stylised Sarajevo map (Miljacka, hills, tram line) and all 13 stage nodes. Locked stages stay visible but can't be entered.
-- Kovači: a side-scrolling level with 5 combat arenas, each camera-locked behind gates until it's cleared, then a boss arena.
-- 4 enemy types: souvenir seller (melee walker), pigeon feeder (arcing ranged thrower), delivery runner (platform jumper) and crate porter (wind-up charger).
-- Boss **Majstor Kazandžija** (master coppersmith) with 2 phases. Phase 1: slam, charge, pot volley. Phase 2: pot rain with warnings, double shockwave, leap, charge, summon.
-- XP → level-up pause → pick 1 of 3 weapons to merge plus 1 of 3 buffs (strength, speed, durability).
-- 12 mergeable local weapons. Each merge adds a behavior: tram handle (swing), ćevapi skewer (piercing throw), džezva (coffee spray), fildžan (boomerang), umbrella (orbit), baking tray (ground shockwave), pigeon (homing), tram bell (pulse), burek (bouncer), lokum (slow on every hit), lantern (burn on every hit) and sudžuk (chain hits). The weapon's sprite (attached charms and a glow), swing colour and generated Bosnian name change with every merge, e.g. *Lančana Burekova Tramvajska ručka IV +2*.
-- KM rewards (replays pay 35%), and a shop with Health, Damage, Move speed, XP gain and starting weapons (Ćevap-ražanj, Džezva).
-- A JSON save file holding money, upgrades, unlocks, clears and settings, with a reset option. Unlocks are recomputed from the clear chain on every load.
-- Settings: Bosnian (default) or English, volumes, fullscreen, key rebinding, reset save.
-- Generated chiptune music for each stage and the boss, plus generated sound effects (WebAudio, no audio files).
+| # | Stage | Look | Enemies | Boss |
+|---|---|---|---|---|
+| 1 | Kovači | old town, cobbles, grill coals | souvenir seller, pigeon feeder, delivery runner, crate porter | Master Coppersmith |
+| 2 | Bistrik | steep hillside, stone walls, sunset, rose thorns | accordionist (wavy notes), gardener (flower-pot bombs), stair jogger (dash), neighbour (umbrella shield) | Fountain Keeper |
+| 3 | Skenderija | winter plaza, snow, ice | skateboarder, figure skater (spin), popcorn vendor, snowball kid | Skating Coach |
+| 4 | Marijin Dvor | glass towers at dusk, live wires | clerk (paper planes), scooter courier, security guard (shield), intern (homing paper) | Chief Executive |
+| 5 | Grbavica | apartment blocks, tar | football fan (rolling balls), drummer (buffs allies), referee, goalkeeper | Touchline Coach |
+| 6 | Malta | tram depot at night, sparking rails | ticket inspector, mechanic (oil-can bombs), cyclist, electrician (sniper) | Tram Driver |
+| 7 | Čengić Vila | blocks and market stalls, puddles | granny with trolley (charge), water-balloon kid, chess player, florist (homing petals) | Chess Grandmaster |
+| 8 | Hrasno | high-rise towers, paint spills | window cleaner (drops from above), painter, antenna installer (sniper), caretaker (shield) | Building Manager |
+| 9 | Pofalići | green hills, thorns | hiker, beekeeper (bee swarms), apple picker, trail runner | Head Beekeeper |
+| 10 | Ciglane | brick terraces, wet cement | bricklayer, plank carrier (spin), surveyor (sniper), scaffold worker (drop) | Master Builder |
+| 11 | Koševo | stadium under floodlights, steeplechase water | sprinter, javelin thrower (sniper), shot putter (bombs), hammer thrower (spin) | Decathlete |
+| 12 | Alipašino Polje | blocks at night, graffiti paint | street baller, block DJ (buffs allies), graffiti artist, breakdancer | Block MC |
+| 13 | Dobrinja | airport, jet blast | baggage handler, flight attendant, ramp marshaller (sniper), drone pilot | Flight Captain (3 phases) |
 
-Stages 2–13 currently reuse Kovači's content and are marked as placeholders in the menu. They exist so the unlock chain can be played end to end. Unique content for them comes in milestone 3.
+Each stage has its own tileset (ground, platforms and hazard), parallax backdrop, 5 generated arenas, a boss arena and a composed chiptune with a faster boss variant.
+
+**Difficulty curve:** `difficulty` in `stages.json` rises from 1.15 to 5.11. Enemy and boss health scale with it, damage at about a third of that rate, and attack frequency up to 1.7×. Wave sizes, enemies alive at once and spawn speed also grow per stage. Rewards grow too, so later stages need shop upgrades.
+
+**Enemy behaviours** (from `enemies.json`): walker, charger, thrower, jumper, shooter, bomber, dasher, shielder (blocks frontal hits, so attack from behind or above), summoner (homing minions), sniper (shows an aim line first), roller, buffer (powers up nearby enemies), dropper (rappels down onto you), spinner.
+
+**Boss attacks:** slam, shockwave, leap, charge, volley, rain (with ground warnings), summon, barrage, spiral, laser (telegraphed beam across the arena), teleport, zigzag dashes, trap (ground patches), roll, pull (vortex), meteor (homing explosive), shield (invulnerable while minions attack).
+
+## Using your own music
+
+You can give any stage a chiptune version of a real song if you have it as a **MIDI file (.mid)**:
+
+```bash
+node scripts/import-midi.mjs path/to/song.mid bistrik            # first 16 bars, looped
+node scripts/import-midi.mjs path/to/song.mid bistrik --bars 32 --transpose -2
+```
+
+This writes `src/data/music/bistrik.json` and points that stage at it. The highest part becomes the lead, the lowest the bass, one more part the harmony, and General MIDI drums become chip drums. Audio files (MP3/WAV) can't be converted. Copyrighted songs are fine for private play but need a licence if the game is distributed. Traditional sevdalinke are public domain.
 
 ## Architecture
 
@@ -65,7 +88,8 @@ electron/      Main process (atomic save.json writes plus .bak backup) and prelo
 
 - **Reorder stages:** edit `order` in `src/data/stages.json`. Unlocking follows that array; no code changes needed.
 - **Swap in hand-drawn art:** change an entry in `src/art/manifest.ts` to `{ kind: 'image', url, frameWidth, frameHeight }` and keep the same key and frame layout. Character sheets use 14 frames: idle×2, run×4, jump, fall, attack×2, hurt, defeat×3.
-- **Edit arenas:** `scripts/build-layouts.mjs` (ASCII → `layouts.json`, size-checked). Legend: `#` solid, `=` one-way, `H` ladder, `^` hazard, `S` enemy spawn, `B` boss spawn.
+- **Edit arenas:** `scripts/build-layouts.mjs` contains Kovači's hand-made arenas and the generator for the other stages. It writes `layouts.json`, which you can also edit directly. Legend: `#` solid, `=` one-way, `H` ladder, `^` hazard, `S` enemy spawn, `B` boss spawn. A test checks that every platform and spawn point in every arena is reachable.
+- **Edit campaign content:** `scripts/build-content.mjs` generates stages, enemies, bosses, themes, sprite recipes and names. You can also edit the JSON files directly.
 - **Pooling:** enemies (64) and projectiles (320 player and 160 enemy) are Arcade groups reused through `get()`, `spawn()`/`fire()` and `kill()`.
 - **Resolution:** internal 640×360 (16 px tiles), scaled to the window with nearest-neighbour filtering. That is exactly 3× at 1920×1080.
 

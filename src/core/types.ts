@@ -17,7 +17,17 @@ export interface WaveDef {
   interval: number;
 }
 
-export interface MusicDef { seed: number; tempo: number; scale: string; root: number }
+export interface MusicDef {
+  seed: number; tempo: number; scale: string; root: number;
+  /** Lead instrument: square | pulse | saw | triangle */
+  lead?: string;
+  /** Drum pattern: march | dance | shuffle | halftime | gallop | breakbeat | waltz */
+  drums?: string;
+  /** Composition style: sevdah | waltz | arcade | funk | anthem | drive | polka | hiphop */
+  style?: string;
+  /** Optional imported song (src/data/music/<track>.json, made by scripts/import-midi.mjs) */
+  track?: string;
+}
 
 export interface StageDef {
   id: string;
@@ -36,8 +46,6 @@ export interface StageDef {
   difficulty: number;
   music: MusicDef;
   waves: WaveDef[];
-  /** Milestone-1 stand-in content (reuses Kovači assets) */
-  placeholder?: boolean;
 }
 
 export interface StagesFile {
@@ -46,7 +54,9 @@ export interface StagesFile {
   stages: Record<string, Omit<StageDef, 'id'>>;
 }
 
-export type EnemyBehavior = 'walker' | 'charger' | 'thrower' | 'jumper' | 'shooter' | 'climber';
+export type EnemyBehavior =
+  | 'walker' | 'charger' | 'thrower' | 'jumper' | 'shooter' | 'bomber' | 'dasher'
+  | 'shielder' | 'summoner' | 'sniper' | 'roller' | 'buffer' | 'dropper' | 'spinner';
 
 export interface EnemyDef {
   id: string;
@@ -61,7 +71,9 @@ export interface EnemyDef {
   projectile?: string;
 }
 
-export type BossAttack = 'slam' | 'charge' | 'volley' | 'rain' | 'shockwave' | 'summon' | 'leap';
+export type BossAttack =
+  | 'slam' | 'charge' | 'volley' | 'rain' | 'shockwave' | 'summon' | 'leap'
+  | 'barrage' | 'spiral' | 'laser' | 'teleport' | 'zigzag' | 'trap' | 'roll' | 'pull' | 'meteor' | 'shield';
 
 export interface BossPhase {
   /** Phase is active while hp fraction is <= this value */
@@ -80,6 +92,8 @@ export interface BossDef {
   xp: number;
   projectile: string;
   summon?: string;
+  /** Tint used for this boss's beams, traps and rings */
+  color?: string;
   phases: BossPhase[];
 }
 
@@ -131,6 +145,8 @@ export interface ShopFile { upgrades: ShopUpgradeDef[]; defaultStartWeapon: stri
 export interface CharacterRecipe {
   skin: string; hair: string; hairStyle: string; shirt: string; shirt2: string;
   pants: string; shoes: string; accessory?: string; accessoryColor?: string; eyes?: string;
+  /** Held or worn item drawn from PROPS in art/props.ts */
+  prop?: string;
 }
 
 export interface CharacterDef {
@@ -146,8 +162,19 @@ export interface ThemeDef {
   mid: string; midDetail: string; roof: string;
   groundTop: string; ground: string; groundDark: string;
   platform: string; platformDark: string;
+  /** coals | water | sparks | thorns | cement | paint | ice | tar | jet */
   hazardStyle: string;
+  /** oldtown | hillside | modern | blocks | industrial | brick | stadium | airport | plaza */
   backdrop: string;
+  /** cobble | stone | concrete | asphalt | grass | brick | ice | track | tarmac */
+  groundStyle?: string;
+  /** wood | metal | concrete | awning | brick */
+  platformStyle?: string;
+  accent?: string;
+  night?: boolean;
+  snow?: boolean;
+  /** Hazard contact damage (default 16) and slow while standing in it */
+  hazardDamage?: number;
 }
 
 export interface GameData {

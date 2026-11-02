@@ -33,12 +33,15 @@
    "boss": "kazandzija",
    "bossLayout": "kovaci_boss",
    "hazard": "coals",
-   "difficulty": 1,
+   "difficulty": 1.15,
    "music": {
     "seed": 1000,
     "tempo": 132,
     "scale": "hijaz",
-    "root": 57
+    "root": 57,
+    "lead": "square",
+    "drums": "march",
+    "style": "sevdah"
    },
    "waves": [
     {
@@ -57,80 +60,80 @@
      "spawns": [
       {
        "enemy": "prodavac",
-       "count": 5
+       "count": 4
       },
       {
        "enemy": "golubar",
        "count": 3
       }
      ],
-     "maxAlive": 4,
-     "interval": 1.2
+     "maxAlive": 5,
+     "interval": 1.24
     },
     {
      "layout": "kovaci_3",
      "spawns": [
       {
-       "enemy": "dostavljac",
-       "count": 5
+       "enemy": "prodavac",
+       "count": 3
       },
       {
        "enemy": "golubar",
        "count": 3
       },
       {
-       "enemy": "prodavac",
-       "count": 3
+       "enemy": "dostavljac",
+       "count": 4
       }
      ],
-     "maxAlive": 6,
-     "interval": 1
+     "maxAlive": 7,
+     "interval": 1.08
     },
     {
      "layout": "kovaci_4",
      "spawns": [
       {
-       "enemy": "nosac",
+       "enemy": "prodavac",
+       "count": 3
+      },
+      {
+       "enemy": "golubar",
        "count": 3
       },
       {
        "enemy": "dostavljac",
-       "count": 4
+       "count": 3
       },
       {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
+       "enemy": "nosac",
+       "count": 3
       }
      ],
-     "maxAlive": 8,
-     "interval": 0.9
+     "maxAlive": 9,
+     "interval": 0.92
     },
     {
      "layout": "kovaci_5",
      "spawns": [
       {
        "enemy": "prodavac",
-       "count": 8
+       "count": 4
       },
       {
        "enemy": "golubar",
-       "count": 5
+       "count": 4
       },
       {
        "enemy": "dostavljac",
-       "count": 6
+       "count": 4
       },
       {
        "enemy": "nosac",
-       "count": 4
+       "count": 5
       }
      ],
-     "maxAlive": 12,
-     "interval": 0.7
+     "maxAlive": 11,
+     "interval": 0.76
     }
    ]
   },
@@ -140,119 +143,121 @@
     "x": 548,
     "y": 196
    },
-   "theme": "kovaci",
-   "reward": 220,
+   "theme": "bistrik",
+   "reward": 246,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "harmonikas",
+    "vrtlarica",
+    "dzoger",
+    "komsija"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 1.22,
+   "boss": "cesmarka",
+   "bossLayout": "bistrik_boss",
+   "hazard": "thorns",
+   "difficulty": 1.48,
    "music": {
-    "seed": 1037,
-    "tempo": 134,
+    "seed": 2017,
+    "tempo": 116,
     "scale": "minor",
-    "root": 55
+    "root": 55,
+    "lead": "triangle",
+    "drums": "shuffle",
+    "style": "waltz"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "bistrik_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
+       "enemy": "harmonikas",
+       "count": 6
       }
      ],
      "maxAlive": 3,
-     "interval": 1.4
+     "interval": 1.36
     },
     {
-     "layout": "kovaci_2",
+     "layout": "bistrik_2",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
+       "enemy": "harmonikas",
+       "count": 4
       },
       {
-       "enemy": "golubar",
+       "enemy": "vrtlarica",
        "count": 3
       }
      ],
-     "maxAlive": 4,
+     "maxAlive": 5,
      "interval": 1.2
     },
     {
-     "layout": "kovaci_3",
+     "layout": "bistrik_3",
      "spawns": [
       {
-       "enemy": "dostavljac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
+       "enemy": "harmonikas",
        "count": 3
       },
       {
-       "enemy": "prodavac",
-       "count": 3
-      }
-     ],
-     "maxAlive": 6,
-     "interval": 1
-    },
-    {
-     "layout": "kovaci_4",
-     "spawns": [
-      {
-       "enemy": "nosac",
+       "enemy": "vrtlarica",
        "count": 3
       },
       {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
+       "enemy": "dzoger",
        "count": 4
       }
      ],
-     "maxAlive": 8,
-     "interval": 0.9
+     "maxAlive": 7,
+     "interval": 1.04
     },
     {
-     "layout": "kovaci_5",
+     "layout": "bistrik_4",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 8
+       "enemy": "harmonikas",
+       "count": 3
       },
       {
-       "enemy": "golubar",
-       "count": 5
+       "enemy": "vrtlarica",
+       "count": 3
       },
       {
-       "enemy": "dostavljac",
+       "enemy": "dzoger",
+       "count": 3
+      },
+      {
+       "enemy": "komsija",
+       "count": 3
+      }
+     ],
+     "maxAlive": 10,
+     "interval": 0.88
+    },
+    {
+     "layout": "bistrik_5",
+     "spawns": [
+      {
+       "enemy": "harmonikas",
+       "count": 4
+      },
+      {
+       "enemy": "vrtlarica",
+       "count": 4
+      },
+      {
+       "enemy": "dzoger",
+       "count": 4
+      },
+      {
+       "enemy": "komsija",
        "count": 6
-      },
-      {
-       "enemy": "nosac",
-       "count": 4
       }
      ],
      "maxAlive": 12,
-     "interval": 0.7
+     "interval": 0.72
     }
-   ],
-   "placeholder": true
+   ]
   },
   "skenderija": {
    "name": "Skenderija",
@@ -260,119 +265,121 @@
     "x": 458,
     "y": 186
    },
-   "theme": "kovaci",
-   "reward": 290,
+   "theme": "skenderija",
+   "reward": 354,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "skejter",
+    "klizacica",
+    "kokice",
+    "grudvas"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 1.44,
+   "boss": "trener_klizanja",
+   "bossLayout": "skenderija_boss",
+   "hazard": "ice",
+   "difficulty": 1.81,
    "music": {
-    "seed": 1074,
-    "tempo": 136,
-    "scale": "dorian",
-    "root": 52
+    "seed": 3031,
+    "tempo": 148,
+    "scale": "major",
+    "root": 60,
+    "lead": "pulse",
+    "drums": "dance",
+    "style": "arcade"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "skenderija_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
+       "enemy": "skejter",
+       "count": 6
       }
      ],
      "maxAlive": 3,
-     "interval": 1.4
+     "interval": 1.32
     },
     {
-     "layout": "kovaci_2",
+     "layout": "skenderija_2",
      "spawns": [
       {
-       "enemy": "prodavac",
+       "enemy": "skejter",
        "count": 5
       },
       {
-       "enemy": "golubar",
-       "count": 3
-      }
-     ],
-     "maxAlive": 4,
-     "interval": 1.2
-    },
-    {
-     "layout": "kovaci_3",
-     "spawns": [
-      {
-       "enemy": "dostavljac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
+       "enemy": "klizacica",
+       "count": 4
       }
      ],
      "maxAlive": 6,
-     "interval": 1
+     "interval": 1.16
     },
     {
-     "layout": "kovaci_4",
+     "layout": "skenderija_3",
      "spawns": [
       {
-       "enemy": "nosac",
-       "count": 3
-      },
-      {
-       "enemy": "dostavljac",
+       "enemy": "skejter",
        "count": 4
       },
       {
-       "enemy": "golubar",
+       "enemy": "klizacica",
        "count": 4
       },
       {
-       "enemy": "prodavac",
-       "count": 4
+       "enemy": "kokice",
+       "count": 5
       }
      ],
      "maxAlive": 8,
-     "interval": 0.9
+     "interval": 1
     },
     {
-     "layout": "kovaci_5",
+     "layout": "skenderija_4",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 8
+       "enemy": "skejter",
+       "count": 4
       },
       {
-       "enemy": "golubar",
-       "count": 5
+       "enemy": "klizacica",
+       "count": 4
       },
       {
-       "enemy": "dostavljac",
-       "count": 6
+       "enemy": "kokice",
+       "count": 4
       },
       {
-       "enemy": "nosac",
+       "enemy": "grudvas",
        "count": 4
       }
      ],
-     "maxAlive": 12,
-     "interval": 0.7
+     "maxAlive": 10,
+     "interval": 0.84
+    },
+    {
+     "layout": "skenderija_5",
+     "spawns": [
+      {
+       "enemy": "skejter",
+       "count": 5
+      },
+      {
+       "enemy": "klizacica",
+       "count": 5
+      },
+      {
+       "enemy": "kokice",
+       "count": 5
+      },
+      {
+       "enemy": "grudvas",
+       "count": 6
+      }
+     ],
+     "maxAlive": 13,
+     "interval": 0.68
     }
-   ],
-   "placeholder": true
+   ]
   },
   "marijin_dvor": {
    "name": "Marijin Dvor",
@@ -380,119 +387,121 @@
     "x": 404,
     "y": 160
    },
-   "theme": "kovaci",
-   "reward": 360,
+   "theme": "marijin_dvor",
+   "reward": 474,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "sluzbenik",
+    "romobil",
+    "zastitar",
+    "stazistica"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 1.66,
+   "boss": "direktorica",
+   "bossLayout": "marijin_dvor_boss",
+   "hazard": "sparks",
+   "difficulty": 2.14,
    "music": {
-    "seed": 1111,
-    "tempo": 138,
-    "scale": "major",
-    "root": 50
+    "seed": 4049,
+    "tempo": 124,
+    "scale": "dorian",
+    "root": 53,
+    "lead": "saw",
+    "drums": "halftime",
+    "style": "funk"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "marijin_dvor_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
-      }
-     ],
-     "maxAlive": 3,
-     "interval": 1.4
-    },
-    {
-     "layout": "kovaci_2",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
+       "enemy": "sluzbenik",
+       "count": 7
       }
      ],
      "maxAlive": 4,
-     "interval": 1.2
+     "interval": 1.28
     },
     {
-     "layout": "kovaci_3",
+     "layout": "marijin_dvor_2",
      "spawns": [
       {
-       "enemy": "dostavljac",
+       "enemy": "sluzbenik",
        "count": 5
       },
       {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
+       "enemy": "romobil",
+       "count": 4
       }
      ],
      "maxAlive": 6,
-     "interval": 1
+     "interval": 1.12
     },
     {
-     "layout": "kovaci_4",
+     "layout": "marijin_dvor_3",
      "spawns": [
       {
-       "enemy": "nosac",
-       "count": 3
-      },
-      {
-       "enemy": "dostavljac",
+       "enemy": "sluzbenik",
        "count": 4
       },
       {
-       "enemy": "golubar",
+       "enemy": "romobil",
        "count": 4
       },
       {
-       "enemy": "prodavac",
-       "count": 4
+       "enemy": "zastitar",
+       "count": 5
       }
      ],
      "maxAlive": 8,
-     "interval": 0.9
+     "interval": 0.96
     },
     {
-     "layout": "kovaci_5",
+     "layout": "marijin_dvor_4",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 8
+       "enemy": "sluzbenik",
+       "count": 4
       },
       {
-       "enemy": "golubar",
-       "count": 5
+       "enemy": "romobil",
+       "count": 4
       },
       {
-       "enemy": "dostavljac",
-       "count": 6
+       "enemy": "zastitar",
+       "count": 4
       },
       {
-       "enemy": "nosac",
+       "enemy": "stazistica",
        "count": 4
       }
      ],
-     "maxAlive": 12,
-     "interval": 0.7
+     "maxAlive": 11,
+     "interval": 0.8
+    },
+    {
+     "layout": "marijin_dvor_5",
+     "spawns": [
+      {
+       "enemy": "sluzbenik",
+       "count": 5
+      },
+      {
+       "enemy": "romobil",
+       "count": 5
+      },
+      {
+       "enemy": "zastitar",
+       "count": 5
+      },
+      {
+       "enemy": "stazistica",
+       "count": 7
+      }
+     ],
+     "maxAlive": 13,
+     "interval": 0.64
     }
-   ],
-   "placeholder": true
+   ]
   },
   "grbavica": {
    "name": "Grbavica",
@@ -500,119 +509,121 @@
     "x": 372,
     "y": 214
    },
-   "theme": "kovaci",
-   "reward": 430,
+   "theme": "grbavica",
+   "reward": 606,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "navijac",
+    "bubnjar",
+    "sudija",
+    "golman"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 1.88,
+   "boss": "trener",
+   "bossLayout": "grbavica_boss",
+   "hazard": "tar",
+   "difficulty": 2.47,
    "music": {
-    "seed": 1148,
+    "seed": 5057,
     "tempo": 140,
-    "scale": "hijaz",
-    "root": 57
+    "scale": "major",
+    "root": 55,
+    "lead": "square",
+    "drums": "march",
+    "style": "anthem"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "grbavica_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
-      }
-     ],
-     "maxAlive": 3,
-     "interval": 1.4
-    },
-    {
-     "layout": "kovaci_2",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
+       "enemy": "navijac",
+       "count": 7
       }
      ],
      "maxAlive": 4,
-     "interval": 1.2
+     "interval": 1.24
     },
     {
-     "layout": "kovaci_3",
+     "layout": "grbavica_2",
      "spawns": [
       {
-       "enemy": "dostavljac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
-      }
-     ],
-     "maxAlive": 6,
-     "interval": 1
-    },
-    {
-     "layout": "kovaci_4",
-     "spawns": [
-      {
-       "enemy": "nosac",
-       "count": 3
-      },
-      {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
-      }
-     ],
-     "maxAlive": 8,
-     "interval": 0.9
-    },
-    {
-     "layout": "kovaci_5",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 8
-      },
-      {
-       "enemy": "golubar",
-       "count": 5
-      },
-      {
-       "enemy": "dostavljac",
+       "enemy": "navijac",
        "count": 6
       },
       {
-       "enemy": "nosac",
+       "enemy": "bubnjar",
+       "count": 4
+      }
+     ],
+     "maxAlive": 6,
+     "interval": 1.08
+    },
+    {
+     "layout": "grbavica_3",
+     "spawns": [
+      {
+       "enemy": "navijac",
+       "count": 4
+      },
+      {
+       "enemy": "bubnjar",
+       "count": 4
+      },
+      {
+       "enemy": "sudija",
+       "count": 6
+      }
+     ],
+     "maxAlive": 9,
+     "interval": 0.92
+    },
+    {
+     "layout": "grbavica_4",
+     "spawns": [
+      {
+       "enemy": "navijac",
+       "count": 4
+      },
+      {
+       "enemy": "bubnjar",
+       "count": 4
+      },
+      {
+       "enemy": "sudija",
+       "count": 4
+      },
+      {
+       "enemy": "golman",
        "count": 4
       }
      ],
      "maxAlive": 12,
-     "interval": 0.7
+     "interval": 0.76
+    },
+    {
+     "layout": "grbavica_5",
+     "spawns": [
+      {
+       "enemy": "navijac",
+       "count": 6
+      },
+      {
+       "enemy": "bubnjar",
+       "count": 6
+      },
+      {
+       "enemy": "sudija",
+       "count": 6
+      },
+      {
+       "enemy": "golman",
+       "count": 7
+      }
+     ],
+     "maxAlive": 14,
+     "interval": 0.6
     }
-   ],
-   "placeholder": true
+   ]
   },
   "malta": {
    "name": "Malta",
@@ -620,119 +631,121 @@
     "x": 318,
     "y": 182
    },
-   "theme": "kovaci",
-   "reward": 500,
+   "theme": "malta",
+   "reward": 750,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "kondukter",
+    "mehanicar",
+    "biciklista",
+    "elektricar"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 2.1,
+   "boss": "vozacica",
+   "bossLayout": "malta_boss",
+   "hazard": "sparks",
+   "difficulty": 2.8,
    "music": {
-    "seed": 1185,
-    "tempo": 142,
+    "seed": 6067,
+    "tempo": 152,
     "scale": "minor",
-    "root": 55
+    "root": 50,
+    "lead": "saw",
+    "drums": "gallop",
+    "style": "drive"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "malta_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
-      }
-     ],
-     "maxAlive": 3,
-     "interval": 1.4
-    },
-    {
-     "layout": "kovaci_2",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
+       "enemy": "kondukter",
+       "count": 8
       }
      ],
      "maxAlive": 4,
      "interval": 1.2
     },
     {
-     "layout": "kovaci_3",
+     "layout": "malta_2",
      "spawns": [
       {
-       "enemy": "dostavljac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
-      }
-     ],
-     "maxAlive": 6,
-     "interval": 1
-    },
-    {
-     "layout": "kovaci_4",
-     "spawns": [
-      {
-       "enemy": "nosac",
-       "count": 3
-      },
-      {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
-      }
-     ],
-     "maxAlive": 8,
-     "interval": 0.9
-    },
-    {
-     "layout": "kovaci_5",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 8
-      },
-      {
-       "enemy": "golubar",
-       "count": 5
-      },
-      {
-       "enemy": "dostavljac",
+       "enemy": "kondukter",
        "count": 6
       },
       {
-       "enemy": "nosac",
-       "count": 4
+       "enemy": "mehanicar",
+       "count": 5
+      }
+     ],
+     "maxAlive": 7,
+     "interval": 1.04
+    },
+    {
+     "layout": "malta_3",
+     "spawns": [
+      {
+       "enemy": "kondukter",
+       "count": 5
+      },
+      {
+       "enemy": "mehanicar",
+       "count": 5
+      },
+      {
+       "enemy": "biciklista",
+       "count": 6
+      }
+     ],
+     "maxAlive": 9,
+     "interval": 0.88
+    },
+    {
+     "layout": "malta_4",
+     "spawns": [
+      {
+       "enemy": "kondukter",
+       "count": 5
+      },
+      {
+       "enemy": "mehanicar",
+       "count": 5
+      },
+      {
+       "enemy": "biciklista",
+       "count": 5
+      },
+      {
+       "enemy": "elektricar",
+       "count": 5
       }
      ],
      "maxAlive": 12,
-     "interval": 0.7
+     "interval": 0.72
+    },
+    {
+     "layout": "malta_5",
+     "spawns": [
+      {
+       "enemy": "kondukter",
+       "count": 6
+      },
+      {
+       "enemy": "mehanicar",
+       "count": 6
+      },
+      {
+       "enemy": "biciklista",
+       "count": 6
+      },
+      {
+       "enemy": "elektricar",
+       "count": 8
+      }
+     ],
+     "maxAlive": 15,
+     "interval": 0.56
     }
-   ],
-   "placeholder": true
+   ]
   },
   "cengic_vila": {
    "name": "Čengić Vila",
@@ -740,119 +753,121 @@
     "x": 276,
     "y": 150
    },
-   "theme": "kovaci",
-   "reward": 570,
+   "theme": "cengic_vila",
+   "reward": 906,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "baka",
+    "balonas",
+    "sahista",
+    "cvjecarka"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 2.32,
+   "boss": "velemajstor",
+   "bossLayout": "cengic_vila_boss",
+   "hazard": "water",
+   "difficulty": 3.13,
    "music": {
-    "seed": 1222,
-    "tempo": 144,
-    "scale": "dorian",
-    "root": 52
+    "seed": 7079,
+    "tempo": 128,
+    "scale": "major",
+    "root": 62,
+    "lead": "pulse",
+    "drums": "shuffle",
+    "style": "polka"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "cengic_vila_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
-      }
-     ],
-     "maxAlive": 3,
-     "interval": 1.4
-    },
-    {
-     "layout": "kovaci_2",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
+       "enemy": "baka",
+       "count": 9
       }
      ],
      "maxAlive": 4,
-     "interval": 1.2
+     "interval": 1.16
     },
     {
-     "layout": "kovaci_3",
+     "layout": "cengic_vila_2",
      "spawns": [
       {
-       "enemy": "dostavljac",
+       "enemy": "baka",
+       "count": 7
+      },
+      {
+       "enemy": "balonas",
        "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
       }
      ],
-     "maxAlive": 6,
+     "maxAlive": 7,
      "interval": 1
     },
     {
-     "layout": "kovaci_4",
+     "layout": "cengic_vila_3",
      "spawns": [
       {
-       "enemy": "nosac",
-       "count": 3
-      },
-      {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
-      }
-     ],
-     "maxAlive": 8,
-     "interval": 0.9
-    },
-    {
-     "layout": "kovaci_5",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 8
-      },
-      {
-       "enemy": "golubar",
+       "enemy": "baka",
        "count": 5
       },
       {
-       "enemy": "dostavljac",
-       "count": 6
+       "enemy": "balonas",
+       "count": 5
       },
       {
-       "enemy": "nosac",
-       "count": 4
+       "enemy": "sahista",
+       "count": 7
       }
      ],
-     "maxAlive": 12,
-     "interval": 0.7
+     "maxAlive": 10,
+     "interval": 0.84
+    },
+    {
+     "layout": "cengic_vila_4",
+     "spawns": [
+      {
+       "enemy": "baka",
+       "count": 5
+      },
+      {
+       "enemy": "balonas",
+       "count": 5
+      },
+      {
+       "enemy": "sahista",
+       "count": 5
+      },
+      {
+       "enemy": "cvjecarka",
+       "count": 5
+      }
+     ],
+     "maxAlive": 13,
+     "interval": 0.68
+    },
+    {
+     "layout": "cengic_vila_5",
+     "spawns": [
+      {
+       "enemy": "baka",
+       "count": 7
+      },
+      {
+       "enemy": "balonas",
+       "count": 7
+      },
+      {
+       "enemy": "sahista",
+       "count": 7
+      },
+      {
+       "enemy": "cvjecarka",
+       "count": 9
+      }
+     ],
+     "maxAlive": 16,
+     "interval": 0.52
     }
-   ],
-   "placeholder": true
+   ]
   },
   "hrasno": {
    "name": "Hrasno",
@@ -860,119 +875,121 @@
     "x": 256,
     "y": 218
    },
-   "theme": "kovaci",
-   "reward": 640,
+   "theme": "hrasno",
+   "reward": 1074,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "perac",
+    "moler",
+    "antenas",
+    "domar"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 2.54,
+   "boss": "upravnik",
+   "bossLayout": "hrasno_boss",
+   "hazard": "paint",
+   "difficulty": 3.46,
    "music": {
-    "seed": 1259,
-    "tempo": 146,
-    "scale": "major",
-    "root": 50
+    "seed": 8087,
+    "tempo": 136,
+    "scale": "dorian",
+    "root": 52,
+    "lead": "square",
+    "drums": "breakbeat",
+    "style": "funk"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "hrasno_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
-      }
-     ],
-     "maxAlive": 3,
-     "interval": 1.4
-    },
-    {
-     "layout": "kovaci_2",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
+       "enemy": "perac",
+       "count": 9
       }
      ],
      "maxAlive": 4,
-     "interval": 1.2
+     "interval": 1.12
     },
     {
-     "layout": "kovaci_3",
+     "layout": "hrasno_2",
      "spawns": [
       {
-       "enemy": "dostavljac",
-       "count": 5
+       "enemy": "perac",
+       "count": 7
       },
       {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
+       "enemy": "moler",
+       "count": 6
       }
      ],
-     "maxAlive": 6,
-     "interval": 1
+     "maxAlive": 7,
+     "interval": 0.96
     },
     {
-     "layout": "kovaci_4",
+     "layout": "hrasno_3",
      "spawns": [
       {
-       "enemy": "nosac",
-       "count": 3
-      },
-      {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
-      }
-     ],
-     "maxAlive": 8,
-     "interval": 0.9
-    },
-    {
-     "layout": "kovaci_5",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 8
-      },
-      {
-       "enemy": "golubar",
-       "count": 5
-      },
-      {
-       "enemy": "dostavljac",
+       "enemy": "perac",
        "count": 6
       },
       {
-       "enemy": "nosac",
-       "count": 4
+       "enemy": "moler",
+       "count": 6
+      },
+      {
+       "enemy": "antenas",
+       "count": 7
       }
      ],
-     "maxAlive": 12,
-     "interval": 0.7
+     "maxAlive": 10,
+     "interval": 0.8
+    },
+    {
+     "layout": "hrasno_4",
+     "spawns": [
+      {
+       "enemy": "perac",
+       "count": 6
+      },
+      {
+       "enemy": "moler",
+       "count": 6
+      },
+      {
+       "enemy": "antenas",
+       "count": 6
+      },
+      {
+       "enemy": "domar",
+       "count": 6
+      }
+     ],
+     "maxAlive": 13,
+     "interval": 0.64
+    },
+    {
+     "layout": "hrasno_5",
+     "spawns": [
+      {
+       "enemy": "perac",
+       "count": 7
+      },
+      {
+       "enemy": "moler",
+       "count": 7
+      },
+      {
+       "enemy": "antenas",
+       "count": 7
+      },
+      {
+       "enemy": "domar",
+       "count": 9
+      }
+     ],
+     "maxAlive": 16,
+     "interval": 0.48
     }
-   ],
-   "placeholder": true
+   ]
   },
   "pofalici": {
    "name": "Pofalići",
@@ -980,119 +997,121 @@
     "x": 340,
     "y": 112
    },
-   "theme": "kovaci",
-   "reward": 710,
+   "theme": "pofalici",
+   "reward": 1254,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "planinar",
+    "pcelar",
+    "berac",
+    "trkacica"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 2.76,
+   "boss": "pcelarka",
+   "bossLayout": "pofalici_boss",
+   "hazard": "thorns",
+   "difficulty": 3.79,
    "music": {
-    "seed": 1296,
-    "tempo": 148,
+    "seed": 9091,
+    "tempo": 120,
     "scale": "hijaz",
-    "root": 57
+    "root": 57,
+    "lead": "triangle",
+    "drums": "waltz",
+    "style": "waltz"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "pofalici_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
+       "enemy": "planinar",
+       "count": 10
       }
      ],
-     "maxAlive": 3,
-     "interval": 1.4
+     "maxAlive": 5,
+     "interval": 1.08
     },
     {
-     "layout": "kovaci_2",
+     "layout": "pofalici_2",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      }
-     ],
-     "maxAlive": 4,
-     "interval": 1.2
-    },
-    {
-     "layout": "kovaci_3",
-     "spawns": [
-      {
-       "enemy": "dostavljac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
-      }
-     ],
-     "maxAlive": 6,
-     "interval": 1
-    },
-    {
-     "layout": "kovaci_4",
-     "spawns": [
-      {
-       "enemy": "nosac",
-       "count": 3
-      },
-      {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
-      }
-     ],
-     "maxAlive": 8,
-     "interval": 0.9
-    },
-    {
-     "layout": "kovaci_5",
-     "spawns": [
-      {
-       "enemy": "prodavac",
+       "enemy": "planinar",
        "count": 8
       },
       {
-       "enemy": "golubar",
-       "count": 5
-      },
+       "enemy": "pcelar",
+       "count": 6
+      }
+     ],
+     "maxAlive": 8,
+     "interval": 0.92
+    },
+    {
+     "layout": "pofalici_3",
+     "spawns": [
       {
-       "enemy": "dostavljac",
+       "enemy": "planinar",
        "count": 6
       },
       {
-       "enemy": "nosac",
-       "count": 4
+       "enemy": "pcelar",
+       "count": 6
+      },
+      {
+       "enemy": "berac",
+       "count": 8
       }
      ],
-     "maxAlive": 12,
-     "interval": 0.7
+     "maxAlive": 11,
+     "interval": 0.76
+    },
+    {
+     "layout": "pofalici_4",
+     "spawns": [
+      {
+       "enemy": "planinar",
+       "count": 6
+      },
+      {
+       "enemy": "pcelar",
+       "count": 6
+      },
+      {
+       "enemy": "berac",
+       "count": 6
+      },
+      {
+       "enemy": "trkacica",
+       "count": 6
+      }
+     ],
+     "maxAlive": 14,
+     "interval": 0.6
+    },
+    {
+     "layout": "pofalici_5",
+     "spawns": [
+      {
+       "enemy": "planinar",
+       "count": 8
+      },
+      {
+       "enemy": "pcelar",
+       "count": 8
+      },
+      {
+       "enemy": "berac",
+       "count": 8
+      },
+      {
+       "enemy": "trkacica",
+       "count": 10
+      }
+     ],
+     "maxAlive": 17,
+     "interval": 0.44
     }
-   ],
-   "placeholder": true
+   ]
   },
   "ciglane": {
    "name": "Ciglane",
@@ -1100,119 +1119,121 @@
     "x": 420,
     "y": 98
    },
-   "theme": "kovaci",
-   "reward": 780,
+   "theme": "ciglane",
+   "reward": 1446,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "zidar",
+    "daskas",
+    "geometar",
+    "skelas"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 2.98,
+   "boss": "majstor_zidar",
+   "bossLayout": "ciglane_boss",
+   "hazard": "cement",
+   "difficulty": 4.12,
    "music": {
-    "seed": 1333,
-    "tempo": 150,
+    "seed": 10103,
+    "tempo": 144,
     "scale": "minor",
-    "root": 55
+    "root": 53,
+    "lead": "square",
+    "drums": "march",
+    "style": "drive"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "ciglane_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
+       "enemy": "zidar",
+       "count": 10
       }
      ],
-     "maxAlive": 3,
-     "interval": 1.4
+     "maxAlive": 5,
+     "interval": 1.04
     },
     {
-     "layout": "kovaci_2",
+     "layout": "ciglane_2",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      }
-     ],
-     "maxAlive": 4,
-     "interval": 1.2
-    },
-    {
-     "layout": "kovaci_3",
-     "spawns": [
-      {
-       "enemy": "dostavljac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
-      }
-     ],
-     "maxAlive": 6,
-     "interval": 1
-    },
-    {
-     "layout": "kovaci_4",
-     "spawns": [
-      {
-       "enemy": "nosac",
-       "count": 3
-      },
-      {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
-      }
-     ],
-     "maxAlive": 8,
-     "interval": 0.9
-    },
-    {
-     "layout": "kovaci_5",
-     "spawns": [
-      {
-       "enemy": "prodavac",
+       "enemy": "zidar",
        "count": 8
       },
       {
-       "enemy": "golubar",
-       "count": 5
-      },
+       "enemy": "daskas",
+       "count": 6
+      }
+     ],
+     "maxAlive": 8,
+     "interval": 0.88
+    },
+    {
+     "layout": "ciglane_3",
+     "spawns": [
       {
-       "enemy": "dostavljac",
+       "enemy": "zidar",
        "count": 6
       },
       {
-       "enemy": "nosac",
-       "count": 4
+       "enemy": "daskas",
+       "count": 6
+      },
+      {
+       "enemy": "geometar",
+       "count": 8
       }
      ],
-     "maxAlive": 12,
-     "interval": 0.7
+     "maxAlive": 11,
+     "interval": 0.72
+    },
+    {
+     "layout": "ciglane_4",
+     "spawns": [
+      {
+       "enemy": "zidar",
+       "count": 6
+      },
+      {
+       "enemy": "daskas",
+       "count": 6
+      },
+      {
+       "enemy": "geometar",
+       "count": 6
+      },
+      {
+       "enemy": "skelas",
+       "count": 6
+      }
+     ],
+     "maxAlive": 15,
+     "interval": 0.56
+    },
+    {
+     "layout": "ciglane_5",
+     "spawns": [
+      {
+       "enemy": "zidar",
+       "count": 8
+      },
+      {
+       "enemy": "daskas",
+       "count": 8
+      },
+      {
+       "enemy": "geometar",
+       "count": 8
+      },
+      {
+       "enemy": "skelas",
+       "count": 10
+      }
+     ],
+     "maxAlive": 18,
+     "interval": 0.4
     }
-   ],
-   "placeholder": true
+   ]
   },
   "kosevo": {
    "name": "Koševo",
@@ -1220,119 +1241,121 @@
     "x": 470,
     "y": 72
    },
-   "theme": "kovaci",
-   "reward": 850,
+   "theme": "kosevo",
+   "reward": 1650,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "sprinter",
+    "kopljasica",
+    "kuglas",
+    "kladivas"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 3.2,
+   "boss": "desetobojka",
+   "bossLayout": "kosevo_boss",
+   "hazard": "water",
+   "difficulty": 4.45,
    "music": {
-    "seed": 1370,
-    "tempo": 152,
+    "seed": 11113,
+    "tempo": 160,
     "scale": "dorian",
-    "root": 52
+    "root": 55,
+    "lead": "saw",
+    "drums": "dance",
+    "style": "anthem"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "kosevo_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
+       "enemy": "sprinter",
+       "count": 11
       }
      ],
-     "maxAlive": 3,
-     "interval": 1.4
-    },
-    {
-     "layout": "kovaci_2",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      }
-     ],
-     "maxAlive": 4,
-     "interval": 1.2
-    },
-    {
-     "layout": "kovaci_3",
-     "spawns": [
-      {
-       "enemy": "dostavljac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
-      }
-     ],
-     "maxAlive": 6,
+     "maxAlive": 5,
      "interval": 1
     },
     {
-     "layout": "kovaci_4",
+     "layout": "kosevo_2",
      "spawns": [
       {
-       "enemy": "nosac",
-       "count": 3
+       "enemy": "sprinter",
+       "count": 9
       },
       {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
+       "enemy": "kopljasica",
+       "count": 7
       }
      ],
-     "maxAlive": 8,
-     "interval": 0.9
+     "maxAlive": 9,
+     "interval": 0.84
     },
     {
-     "layout": "kovaci_5",
+     "layout": "kosevo_3",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 8
+       "enemy": "sprinter",
+       "count": 7
       },
       {
-       "enemy": "golubar",
-       "count": 5
+       "enemy": "kopljasica",
+       "count": 7
       },
       {
-       "enemy": "dostavljac",
-       "count": 6
-      },
-      {
-       "enemy": "nosac",
-       "count": 4
+       "enemy": "kuglas",
+       "count": 9
       }
      ],
      "maxAlive": 12,
-     "interval": 0.7
+     "interval": 0.68
+    },
+    {
+     "layout": "kosevo_4",
+     "spawns": [
+      {
+       "enemy": "sprinter",
+       "count": 7
+      },
+      {
+       "enemy": "kopljasica",
+       "count": 7
+      },
+      {
+       "enemy": "kuglas",
+       "count": 7
+      },
+      {
+       "enemy": "kladivas",
+       "count": 7
+      }
+     ],
+     "maxAlive": 15,
+     "interval": 0.52
+    },
+    {
+     "layout": "kosevo_5",
+     "spawns": [
+      {
+       "enemy": "sprinter",
+       "count": 9
+      },
+      {
+       "enemy": "kopljasica",
+       "count": 9
+      },
+      {
+       "enemy": "kuglas",
+       "count": 9
+      },
+      {
+       "enemy": "kladivas",
+       "count": 11
+      }
+     ],
+     "maxAlive": 18,
+     "interval": 0.36
     }
-   ],
-   "placeholder": true
+   ]
   },
   "alipasino_polje": {
    "name": "Alipašino Polje",
@@ -1340,119 +1363,121 @@
     "x": 168,
     "y": 174
    },
-   "theme": "kovaci",
-   "reward": 920,
+   "theme": "alipasino_polje",
+   "reward": 1866,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "kosarkas",
+    "dj",
+    "grafiter",
+    "plesacica"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 3.42,
+   "boss": "mc_bloka",
+   "bossLayout": "alipasino_polje_boss",
+   "hazard": "paint",
+   "difficulty": 4.78,
    "music": {
-    "seed": 1407,
-    "tempo": 154,
-    "scale": "major",
-    "root": 50
+    "seed": 12127,
+    "tempo": 96,
+    "scale": "minor",
+    "root": 50,
+    "lead": "pulse",
+    "drums": "breakbeat",
+    "style": "hiphop"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "alipasino_polje_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
+       "enemy": "kosarkas",
+       "count": 12
       }
      ],
-     "maxAlive": 3,
-     "interval": 1.4
+     "maxAlive": 5,
+     "interval": 0.96
     },
     {
-     "layout": "kovaci_2",
+     "layout": "alipasino_polje_2",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
+       "enemy": "kosarkas",
+       "count": 9
       },
       {
-       "enemy": "golubar",
-       "count": 3
+       "enemy": "dj",
+       "count": 7
       }
      ],
-     "maxAlive": 4,
-     "interval": 1.2
+     "maxAlive": 9,
+     "interval": 0.8
     },
     {
-     "layout": "kovaci_3",
+     "layout": "alipasino_polje_3",
      "spawns": [
       {
-       "enemy": "dostavljac",
-       "count": 5
+       "enemy": "kosarkas",
+       "count": 7
       },
       {
-       "enemy": "golubar",
-       "count": 3
+       "enemy": "dj",
+       "count": 7
       },
       {
-       "enemy": "prodavac",
-       "count": 3
-      }
-     ],
-     "maxAlive": 6,
-     "interval": 1
-    },
-    {
-     "layout": "kovaci_4",
-     "spawns": [
-      {
-       "enemy": "nosac",
-       "count": 3
-      },
-      {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
-      }
-     ],
-     "maxAlive": 8,
-     "interval": 0.9
-    },
-    {
-     "layout": "kovaci_5",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 8
-      },
-      {
-       "enemy": "golubar",
-       "count": 5
-      },
-      {
-       "enemy": "dostavljac",
-       "count": 6
-      },
-      {
-       "enemy": "nosac",
-       "count": 4
+       "enemy": "grafiter",
+       "count": 9
       }
      ],
      "maxAlive": 12,
-     "interval": 0.7
+     "interval": 0.64
+    },
+    {
+     "layout": "alipasino_polje_4",
+     "spawns": [
+      {
+       "enemy": "kosarkas",
+       "count": 7
+      },
+      {
+       "enemy": "dj",
+       "count": 7
+      },
+      {
+       "enemy": "grafiter",
+       "count": 7
+      },
+      {
+       "enemy": "plesacica",
+       "count": 7
+      }
+     ],
+     "maxAlive": 16,
+     "interval": 0.48
+    },
+    {
+     "layout": "alipasino_polje_5",
+     "spawns": [
+      {
+       "enemy": "kosarkas",
+       "count": 9
+      },
+      {
+       "enemy": "dj",
+       "count": 9
+      },
+      {
+       "enemy": "grafiter",
+       "count": 9
+      },
+      {
+       "enemy": "plesacica",
+       "count": 12
+      }
+     ],
+     "maxAlive": 18,
+     "interval": 0.35
     }
-   ],
-   "placeholder": true
+   ]
   },
   "dobrinja": {
    "name": "Dobrinja",
@@ -1460,119 +1485,121 @@
     "x": 104,
     "y": 240
    },
-   "theme": "kovaci",
-   "reward": 990,
+   "theme": "dobrinja",
+   "reward": 2094,
    "replayFactor": 0.35,
    "enemies": [
-    "prodavac",
-    "golubar",
-    "dostavljac",
-    "nosac"
+    "prtljag",
+    "stjuardesa",
+    "marsal",
+    "dronas"
    ],
-   "boss": "kazandzija",
-   "bossLayout": "kovaci_boss",
-   "hazard": "coals",
-   "difficulty": 3.64,
+   "boss": "kapetanica",
+   "bossLayout": "dobrinja_boss",
+   "hazard": "jet",
+   "difficulty": 5.11,
    "music": {
-    "seed": 1444,
-    "tempo": 156,
+    "seed": 13147,
+    "tempo": 168,
     "scale": "hijaz",
-    "root": 57
+    "root": 52,
+    "lead": "saw",
+    "drums": "gallop",
+    "style": "drive"
    },
    "waves": [
     {
-     "layout": "kovaci_1",
+     "layout": "dobrinja_1",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 5
-      }
-     ],
-     "maxAlive": 3,
-     "interval": 1.4
-    },
-    {
-     "layout": "kovaci_2",
-     "spawns": [
-      {
-       "enemy": "prodavac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      }
-     ],
-     "maxAlive": 4,
-     "interval": 1.2
-    },
-    {
-     "layout": "kovaci_3",
-     "spawns": [
-      {
-       "enemy": "dostavljac",
-       "count": 5
-      },
-      {
-       "enemy": "golubar",
-       "count": 3
-      },
-      {
-       "enemy": "prodavac",
-       "count": 3
+       "enemy": "prtljag",
+       "count": 12
       }
      ],
      "maxAlive": 6,
-     "interval": 1
+     "interval": 0.92
     },
     {
-     "layout": "kovaci_4",
+     "layout": "dobrinja_2",
      "spawns": [
       {
-       "enemy": "nosac",
-       "count": 3
+       "enemy": "prtljag",
+       "count": 10
       },
       {
-       "enemy": "dostavljac",
-       "count": 4
-      },
-      {
-       "enemy": "golubar",
-       "count": 4
-      },
-      {
-       "enemy": "prodavac",
-       "count": 4
+       "enemy": "stjuardesa",
+       "count": 7
       }
      ],
-     "maxAlive": 8,
-     "interval": 0.9
+     "maxAlive": 9,
+     "interval": 0.76
     },
     {
-     "layout": "kovaci_5",
+     "layout": "dobrinja_3",
      "spawns": [
       {
-       "enemy": "prodavac",
-       "count": 8
+       "enemy": "prtljag",
+       "count": 7
       },
       {
-       "enemy": "golubar",
-       "count": 5
+       "enemy": "stjuardesa",
+       "count": 7
       },
       {
-       "enemy": "dostavljac",
-       "count": 6
-      },
-      {
-       "enemy": "nosac",
-       "count": 4
+       "enemy": "marsal",
+       "count": 10
       }
      ],
-     "maxAlive": 12,
-     "interval": 0.7
+     "maxAlive": 13,
+     "interval": 0.6
+    },
+    {
+     "layout": "dobrinja_4",
+     "spawns": [
+      {
+       "enemy": "prtljag",
+       "count": 7
+      },
+      {
+       "enemy": "stjuardesa",
+       "count": 7
+      },
+      {
+       "enemy": "marsal",
+       "count": 7
+      },
+      {
+       "enemy": "dronas",
+       "count": 7
+      }
+     ],
+     "maxAlive": 17,
+     "interval": 0.44
+    },
+    {
+     "layout": "dobrinja_5",
+     "spawns": [
+      {
+       "enemy": "prtljag",
+       "count": 10
+      },
+      {
+       "enemy": "stjuardesa",
+       "count": 10
+      },
+      {
+       "enemy": "marsal",
+       "count": 10
+      },
+      {
+       "enemy": "dronas",
+       "count": 12
+      }
+     ],
+     "maxAlive": 18,
+     "interval": 0.35
     }
-   ],
-   "placeholder": true
+   ]
   }
  }
 }

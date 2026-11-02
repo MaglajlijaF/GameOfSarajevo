@@ -23,7 +23,7 @@ kovaci_1: `
 ........................................
 ........................................
 ..............S..........S..............
-............==============..............
+............==============....=====.....
 ........................................
 ........................................
 .S....................................S.
@@ -151,6 +151,107 @@ kovaci_boss: `
 ########################################
 ########################################`,
 };
+
+
+// ---------- generated arenas for every other stage ----------
+// Platform tiers sit 4 rows apart so each is reachable with a single jump from
+// the one below; double jump gives slack. tests/levels.test.ts re-verifies this.
+function rng(seed) { let s = seed >>> 0; return () => { s = (s + 0x6d2b79f5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+const STYLES = {
+  bistrik:        { pits: 1, tiers: 3, segs: 3, ladders: 1, blocks: 1, stairs: true },
+  skenderija:     { pits: 2, tiers: 2, segs: 4, ladders: 0, blocks: 2 },
+  marijin_dvor:   { pits: 1, tiers: 3, segs: 3, ladders: 2, blocks: 0 },
+  grbavica:       { pits: 1, tiers: 2, segs: 3, ladders: 1, blocks: 2 },
+  malta:          { pits: 3, tiers: 2, segs: 4, ladders: 1, blocks: 1 },
+  cengic_vila:    { pits: 1, tiers: 3, segs: 4, ladders: 1, blocks: 1 },
+  hrasno:         { pits: 2, tiers: 4, segs: 3, ladders: 2, blocks: 0 },
+  pofalici:       { pits: 2, tiers: 3, segs: 3, ladders: 0, blocks: 2, stairs: true },
+  ciglane:        { pits: 2, tiers: 4, segs: 3, ladders: 2, blocks: 2, stairs: true },
+  kosevo:         { pits: 3, tiers: 2, segs: 3, ladders: 0, blocks: 0 },
+  alipasino_polje:{ pits: 2, tiers: 3, segs: 3, ladders: 2, blocks: 1 },
+  dobrinja:       { pits: 3, tiers: 3, segs: 4, ladders: 1, blocks: 1 },
+};
+const TIER_ROWS = [16, 12, 8, 4];
+
+function genArena(stageId, wave, st) {
+  const r = rng(stageId.length * 7919 + wave * 104729 + stageId.charCodeAt(0) * 31);
+  const int = (a, b) => a + Math.floor(r() * (b - a + 1));
+  const g = Array.from({ length: H }, () => Array(W).fill('.'));
+  for (let y = 20; y < H; y++) for (let x = 0; x < W; x++) g[y][x] = '#';
+  // hazard pits (more in later waves)
+  const pits = Math.min(4, st.pits + (wave >= 3 ? 1 : 0));
+  const used = [];
+  for (let i = 0; i < pits; i++) {
+    const wdt = int(2, 3 + Math.min(1, wave >> 1));
+    let x = 0, tries = 0;
+    do { x = int(5, W - 6 - wdt); tries++; } while (tries < 40 && used.some((u) => Math.abs(u - x) < 7));
+    used.push(x);
+    for (let k = 0; k < wdt; k++) { g[20][x + k] = '.'; g[21][x + k] = '^'; }
+  }
+  // cover blocks / stairs on the ground
+  for (let i = 0; i < st.blocks; i++) {
+    const x = int(4, W - 7);
+    if (g[20][x] !== '#' || g[20][x + 2] !== '#') continue;
+    const h = st.stairs ? 1 : int(1, 2);
+    for (let k = 0; k < 3; k++) for (let y = 0; y < h; y++) g[19 - y][x + k] = '#';
+    if (st.stairs) g[18][x + 1] = '#', g[18][x + 2] = '#';
+  }
+  // platform tiers
+  const tiers = Math.min(TIER_ROWS.length, st.tiers + (wave >= 2 ? 0 : -1) + (wave >= 4 ? 1 : 0));
+  let prev = [{ a: 0, b: W - 1 }];
+  const segsByTier = [];
+  for (let t = 0; t < Math.max(1, tiers); t++) {
+    const row = TIER_ROWS[t];
+    const n = Math.max(1, st.segs - t + (wave >= 3 ? 1 : 0));
+    const segs = [];
+    for (let i = 0; i < n * 3 && segs.length < n; i++) {
+      const len = int(4, 9 - t);
+      const base = prev[int(0, prev.length - 1)];
+      // overlap or sit within 3 tiles of a segment on the tier below
+      const lo = Math.max(1, base.a - len - 2), hi = Math.min(W - 2 - len, base.b + 2);
+      if (hi < lo) continue;
+      const a = int(lo, hi);
+      const b = a + len - 1;
+      if (segs.some((s) => a <= s.b + 3 && b >= s.a - 3)) continue;
+      segs.push({ a, b });
+    }
+    for (const s of segs) for (let x = s.a; x <= s.b; x++) g[row][x] = '=';
+    segsByTier.push(segs);
+    prev = segs.length ? segs : prev;
+  }
+  // ladders from the ground up to a tier-2 (row 12) or tier-1 segment
+  for (let i = 0; i < st.ladders && segsByTier.length; i++) {
+    const tier = segsByTier[Math.min(1, segsByTier.length - 1)];
+    if (!tier.length) break;
+    const s = tier[int(0, tier.length - 1)];
+    const x = r() < 0.5 ? s.a : s.b;
+    const row = TIER_ROWS[segsByTier.indexOf(tier)];
+    if (g[20][x] !== '#') continue;
+    for (let y = row + 1; y <= 19; y++) if (g[y][x] === '.') g[y][x] = 'H';
+  }
+  // spawn markers: arena edges, ground and on top of platforms
+  const spawn = (x, y) => { if (g[y][x] === '.') g[y][x] = 'S'; };
+  spawn(1, 19); spawn(W - 2, 19); spawn(20, 19);
+  for (const segs of segsByTier) for (const s of segs) spawn(Math.floor((s.a + s.b) / 2), TIER_ROWS[segsByTier.indexOf(segs)] - 1);
+  return g.map((row) => row.join(''));
+}
+
+function genBoss(stageId, st) {
+  const g = Array.from({ length: H }, () => Array(W).fill('.'));
+  for (let y = 20; y < H; y++) for (let x = 0; x < W; x++) g[y][x] = '#';
+  const r = rng(stageId.length * 31337);
+  const side = 4 + Math.floor(r() * 3);
+  for (let x = side; x < side + 6; x++) { g[13][x] = '='; g[13][W - 1 - x] = '='; }
+  for (let x = 15; x < 25; x++) g[16][x] = '=';
+  if (st.tiers >= 3) for (let x = 17; x < 23; x++) g[9][x] = '=';
+  g[19][8] = 'S'; g[19][31] = 'S'; g[19][20] = 'B';
+  return g.map((row) => row.join(''));
+}
+
+for (const [id, st] of Object.entries(STYLES)) {
+  for (let wv = 1; wv <= 5; wv++) blocks[`${id}_${wv}`] = genArena(id, wv - 1, st).join('\n');
+  blocks[`${id}_boss`] = genBoss(id, st).join('\n');
+}
 
 const out = {};
 for (const [id, text] of Object.entries(blocks)) {

@@ -1,10 +1,757 @@
 {
-  "prodavac": { "sprite": "enemy_prodavac", "behavior": "walker", "hp": 22, "damage": 10, "speed": 46, "xp": 3,
-    "params": { "attackRange": 20, "attackCooldown": 1.3, "jumpPower": 300 } },
-  "golubar": { "sprite": "enemy_golubar", "behavior": "thrower", "hp": 16, "damage": 8, "speed": 38, "xp": 4,
-    "projectile": "corn", "params": { "keepDistance": 130, "throwCooldown": 2.2, "throwSpeed": 190, "jumpPower": 280 } },
-  "dostavljac": { "sprite": "enemy_dostavljac", "behavior": "jumper", "hp": 18, "damage": 9, "speed": 70, "xp": 4,
-    "params": { "hopCooldown": 1.1, "hopPower": 340, "hopSpeed": 120 } },
-  "nosac": { "sprite": "enemy_nosac", "behavior": "charger", "hp": 46, "damage": 14, "speed": 34, "xp": 7,
-    "params": { "chargeRange": 170, "chargeSpeed": 210, "windup": 0.55, "chargeTime": 0.9, "chargeCooldown": 2.4, "jumpPower": 260 } }
+ "prodavac": {
+  "sprite": "enemy_prodavac",
+  "behavior": "walker",
+  "hp": 22,
+  "damage": 10,
+  "speed": 46,
+  "xp": 3,
+  "params": {
+   "attackRange": 20,
+   "attackCooldown": 1.3,
+   "jumpPower": 300
+  }
+ },
+ "golubar": {
+  "sprite": "enemy_golubar",
+  "behavior": "thrower",
+  "hp": 16,
+  "damage": 8,
+  "speed": 38,
+  "xp": 4,
+  "params": {
+   "keepDistance": 130,
+   "throwCooldown": 2.2,
+   "throwSpeed": 190,
+   "jumpPower": 280
+  },
+  "projectile": "corn"
+ },
+ "dostavljac": {
+  "sprite": "enemy_dostavljac",
+  "behavior": "jumper",
+  "hp": 18,
+  "damage": 9,
+  "speed": 70,
+  "xp": 4,
+  "params": {
+   "hopCooldown": 1.1,
+   "hopPower": 340,
+   "hopSpeed": 120
+  }
+ },
+ "nosac": {
+  "sprite": "enemy_nosac",
+  "behavior": "charger",
+  "hp": 46,
+  "damage": 14,
+  "speed": 34,
+  "xp": 7,
+  "params": {
+   "chargeRange": 170,
+   "chargeSpeed": 210,
+   "windup": 0.55,
+   "chargeTime": 0.9,
+   "chargeCooldown": 2.4,
+   "jumpPower": 260
+  }
+ },
+ "harmonikas": {
+  "sprite": "enemy_harmonikas",
+  "behavior": "shooter",
+  "hp": 24,
+  "damage": 9,
+  "speed": 34,
+  "xp": 5,
+  "params": {
+   "keepDistance": 160,
+   "shotCooldown": 2.4,
+   "shotSpeed": 140,
+   "burst": 3,
+   "spread": 36,
+   "sine": 1
+  },
+  "projectile": "note"
+ },
+ "vrtlarica": {
+  "sprite": "enemy_vrtlarica",
+  "behavior": "bomber",
+  "hp": 22,
+  "damage": 11,
+  "speed": 36,
+  "xp": 5,
+  "params": {
+   "keepDistance": 140,
+   "throwCooldown": 2.6,
+   "throwSpeed": 200,
+   "blast": 34
+  },
+  "projectile": "flowerpot"
+ },
+ "dzoger": {
+  "sprite": "enemy_dzoger",
+  "behavior": "dasher",
+  "hp": 24,
+  "damage": 11,
+  "speed": 64,
+  "xp": 5,
+  "params": {
+   "chargeRange": 220,
+   "chargeSpeed": 310,
+   "chargeTime": 0.5,
+   "windup": 0.35,
+   "chargeCooldown": 1.8,
+   "jumpPower": 330
+  }
+ },
+ "komsija": {
+  "sprite": "enemy_komsija",
+  "behavior": "shielder",
+  "hp": 40,
+  "damage": 12,
+  "speed": 32,
+  "xp": 6,
+  "params": {
+   "attackCooldown": 1.6,
+   "windup": 0.4,
+   "jumpPower": 280
+  }
+ },
+ "skejter": {
+  "sprite": "enemy_skejter",
+  "behavior": "dasher",
+  "hp": 26,
+  "damage": 12,
+  "speed": 72,
+  "xp": 5,
+  "params": {
+   "chargeRange": 260,
+   "chargeSpeed": 340,
+   "chargeTime": 0.6,
+   "windup": 0.3,
+   "chargeCooldown": 1.6,
+   "jumpPower": 340
+  }
+ },
+ "klizacica": {
+  "sprite": "enemy_klizacica",
+  "behavior": "spinner",
+  "hp": 30,
+  "damage": 12,
+  "speed": 56,
+  "xp": 6,
+  "params": {
+   "spinTime": 1.3,
+   "spinCooldown": 2.2,
+   "radius": 26
+  }
+ },
+ "kokice": {
+  "sprite": "enemy_kokice",
+  "behavior": "thrower",
+  "hp": 26,
+  "damage": 10,
+  "speed": 40,
+  "xp": 5,
+  "params": {
+   "keepDistance": 130,
+   "throwCooldown": 2,
+   "throwSpeed": 200,
+   "burst": 2
+  },
+  "projectile": "popcorn"
+ },
+ "grudvas": {
+  "sprite": "enemy_grudvas",
+  "behavior": "shooter",
+  "hp": 20,
+  "damage": 10,
+  "speed": 50,
+  "xp": 5,
+  "params": {
+   "keepDistance": 140,
+   "shotCooldown": 1.6,
+   "shotSpeed": 230
+  },
+  "projectile": "snowball"
+ },
+ "sluzbenik": {
+  "sprite": "enemy_sluzbenik",
+  "behavior": "shooter",
+  "hp": 30,
+  "damage": 11,
+  "speed": 40,
+  "xp": 6,
+  "params": {
+   "keepDistance": 170,
+   "shotCooldown": 2,
+   "shotSpeed": 170,
+   "burst": 2,
+   "spread": 20,
+   "sine": 1
+  },
+  "projectile": "paper"
+ },
+ "romobil": {
+  "sprite": "enemy_romobil",
+  "behavior": "dasher",
+  "hp": 30,
+  "damage": 13,
+  "speed": 70,
+  "xp": 6,
+  "params": {
+   "chargeRange": 260,
+   "chargeSpeed": 350,
+   "chargeTime": 0.55,
+   "windup": 0.3,
+   "chargeCooldown": 1.6
+  }
+ },
+ "zastitar": {
+  "sprite": "enemy_zastitar",
+  "behavior": "shielder",
+  "hp": 56,
+  "damage": 14,
+  "speed": 34,
+  "xp": 8,
+  "params": {
+   "attackCooldown": 1.4,
+   "windup": 0.4
+  }
+ },
+ "stazistica": {
+  "sprite": "enemy_stazistica",
+  "behavior": "summoner",
+  "hp": 26,
+  "damage": 9,
+  "speed": 38,
+  "xp": 6,
+  "params": {
+   "keepDistance": 180,
+   "shotCooldown": 3.2,
+   "count": 2,
+   "turn": 2.6,
+   "life": 5
+  },
+  "projectile": "paper"
+ },
+ "navijac": {
+  "sprite": "enemy_navijac",
+  "behavior": "roller",
+  "hp": 34,
+  "damage": 12,
+  "speed": 44,
+  "xp": 6,
+  "params": {
+   "keepDistance": 120,
+   "throwCooldown": 1.8,
+   "throwSpeed": 200
+  },
+  "projectile": "ball"
+ },
+ "bubnjar": {
+  "sprite": "enemy_bubnjar",
+  "behavior": "buffer",
+  "hp": 36,
+  "damage": 10,
+  "speed": 36,
+  "xp": 7,
+  "params": {
+   "keepDistance": 170,
+   "buffCooldown": 4,
+   "radius": 130,
+   "buffTime": 3
+  }
+ },
+ "sudija": {
+  "sprite": "enemy_sudija",
+  "behavior": "shooter",
+  "hp": 32,
+  "damage": 12,
+  "speed": 48,
+  "xp": 6,
+  "params": {
+   "keepDistance": 150,
+   "shotCooldown": 1.5,
+   "shotSpeed": 280
+  },
+  "projectile": "whistle"
+ },
+ "golman": {
+  "sprite": "enemy_golman",
+  "behavior": "jumper",
+  "hp": 44,
+  "damage": 14,
+  "speed": 60,
+  "xp": 7,
+  "params": {
+   "hopCooldown": 1,
+   "hopPower": 400,
+   "hopSpeed": 150
+  }
+ },
+ "kondukter": {
+  "sprite": "enemy_kondukter",
+  "behavior": "walker",
+  "hp": 44,
+  "damage": 14,
+  "speed": 60,
+  "xp": 7,
+  "params": {
+   "attackRange": 26,
+   "attackCooldown": 1,
+   "windup": 0.3,
+   "jumpPower": 320
+  }
+ },
+ "mehanicar": {
+  "sprite": "enemy_mehanicar",
+  "behavior": "bomber",
+  "hp": 38,
+  "damage": 14,
+  "speed": 40,
+  "xp": 7,
+  "params": {
+   "keepDistance": 150,
+   "throwCooldown": 2.4,
+   "throwSpeed": 210,
+   "blast": 40,
+   "burst": 2
+  },
+  "projectile": "oilcan"
+ },
+ "biciklista": {
+  "sprite": "enemy_biciklista",
+  "behavior": "dasher",
+  "hp": 36,
+  "damage": 14,
+  "speed": 74,
+  "xp": 7,
+  "params": {
+   "chargeRange": 280,
+   "chargeSpeed": 370,
+   "chargeTime": 0.6,
+   "windup": 0.3,
+   "chargeCooldown": 1.5
+  }
+ },
+ "elektricar": {
+  "sprite": "enemy_elektricar",
+  "behavior": "sniper",
+  "hp": 30,
+  "damage": 16,
+  "speed": 34,
+  "xp": 8,
+  "params": {
+   "keepDistance": 230,
+   "aimTime": 0.8,
+   "shotSpeed": 480,
+   "shotCooldown": 2.6
+  },
+  "projectile": "bolt"
+ },
+ "baka": {
+  "sprite": "enemy_baka",
+  "behavior": "charger",
+  "hp": 50,
+  "damage": 15,
+  "speed": 36,
+  "xp": 8,
+  "params": {
+   "chargeRange": 200,
+   "chargeSpeed": 260,
+   "windup": 0.5,
+   "chargeTime": 1,
+   "chargeCooldown": 2
+  }
+ },
+ "balonas": {
+  "sprite": "enemy_balonas",
+  "behavior": "bomber",
+  "hp": 30,
+  "damage": 14,
+  "speed": 56,
+  "xp": 7,
+  "params": {
+   "keepDistance": 130,
+   "throwCooldown": 1.9,
+   "throwSpeed": 210,
+   "blast": 32
+  },
+  "projectile": "balloon"
+ },
+ "sahista": {
+  "sprite": "enemy_sahista",
+  "behavior": "thrower",
+  "hp": 34,
+  "damage": 14,
+  "speed": 36,
+  "xp": 8,
+  "params": {
+   "keepDistance": 160,
+   "throwCooldown": 2.2,
+   "throwSpeed": 220,
+   "burst": 3
+  },
+  "projectile": "pawn"
+ },
+ "cvjecarka": {
+  "sprite": "enemy_cvjecarka",
+  "behavior": "summoner",
+  "hp": 32,
+  "damage": 12,
+  "speed": 40,
+  "xp": 8,
+  "params": {
+   "keepDistance": 170,
+   "shotCooldown": 3,
+   "count": 3,
+   "turn": 2.6,
+   "life": 5
+  },
+  "projectile": "petal"
+ },
+ "perac": {
+  "sprite": "enemy_perac",
+  "behavior": "dropper",
+  "hp": 44,
+  "damage": 17,
+  "speed": 54,
+  "xp": 9,
+  "params": {
+   "blast": 36,
+   "jumpPower": 300
+  }
+ },
+ "moler": {
+  "sprite": "enemy_moler",
+  "behavior": "bomber",
+  "hp": 40,
+  "damage": 15,
+  "speed": 42,
+  "xp": 9,
+  "params": {
+   "keepDistance": 150,
+   "throwCooldown": 2.2,
+   "throwSpeed": 210,
+   "blast": 38
+  },
+  "projectile": "paint"
+ },
+ "antenas": {
+  "sprite": "enemy_antenas",
+  "behavior": "sniper",
+  "hp": 36,
+  "damage": 18,
+  "speed": 38,
+  "xp": 9,
+  "params": {
+   "keepDistance": 240,
+   "aimTime": 0.75,
+   "shotSpeed": 500,
+   "shotCooldown": 2.4
+  },
+  "projectile": "signal"
+ },
+ "domar": {
+  "sprite": "enemy_domar",
+  "behavior": "shielder",
+  "hp": 70,
+  "damage": 17,
+  "speed": 38,
+  "xp": 9,
+  "params": {
+   "attackCooldown": 1.3,
+   "windup": 0.35
+  }
+ },
+ "planinar": {
+  "sprite": "enemy_planinar",
+  "behavior": "walker",
+  "hp": 60,
+  "damage": 18,
+  "speed": 50,
+  "xp": 9,
+  "params": {
+   "attackRange": 32,
+   "attackCooldown": 1.1,
+   "windup": 0.3,
+   "jumpPower": 340
+  }
+ },
+ "pcelar": {
+  "sprite": "enemy_pcelar",
+  "behavior": "summoner",
+  "hp": 40,
+  "damage": 13,
+  "speed": 38,
+  "xp": 10,
+  "params": {
+   "keepDistance": 180,
+   "shotCooldown": 2.6,
+   "count": 4,
+   "turn": 3.2,
+   "life": 5
+  },
+  "projectile": "bee"
+ },
+ "berac": {
+  "sprite": "enemy_berac",
+  "behavior": "thrower",
+  "hp": 40,
+  "damage": 15,
+  "speed": 44,
+  "xp": 9,
+  "params": {
+   "keepDistance": 140,
+   "throwCooldown": 1.8,
+   "throwSpeed": 220,
+   "burst": 3
+  },
+  "projectile": "apple"
+ },
+ "trkacica": {
+  "sprite": "enemy_trkacica",
+  "behavior": "jumper",
+  "hp": 46,
+  "damage": 16,
+  "speed": 70,
+  "xp": 9,
+  "params": {
+   "hopCooldown": 0.8,
+   "hopPower": 400,
+   "hopSpeed": 170
+  }
+ },
+ "zidar": {
+  "sprite": "enemy_zidar",
+  "behavior": "thrower",
+  "hp": 48,
+  "damage": 17,
+  "speed": 40,
+  "xp": 10,
+  "params": {
+   "keepDistance": 140,
+   "throwCooldown": 1.7,
+   "throwSpeed": 220,
+   "burst": 2
+  },
+  "projectile": "brick"
+ },
+ "daskas": {
+  "sprite": "enemy_daskas",
+  "behavior": "spinner",
+  "hp": 60,
+  "damage": 18,
+  "speed": 50,
+  "xp": 10,
+  "params": {
+   "spinTime": 1.5,
+   "spinCooldown": 2,
+   "radius": 32
+  }
+ },
+ "geometar": {
+  "sprite": "enemy_geometar",
+  "behavior": "sniper",
+  "hp": 40,
+  "damage": 20,
+  "speed": 38,
+  "xp": 10,
+  "params": {
+   "keepDistance": 250,
+   "aimTime": 0.7,
+   "shotSpeed": 520,
+   "shotCooldown": 2.2
+  },
+  "projectile": "signal"
+ },
+ "skelas": {
+  "sprite": "enemy_skelas",
+  "behavior": "dropper",
+  "hp": 52,
+  "damage": 19,
+  "speed": 56,
+  "xp": 10,
+  "params": {
+   "blast": 40
+  }
+ },
+ "sprinter": {
+  "sprite": "enemy_sprinter",
+  "behavior": "dasher",
+  "hp": 54,
+  "damage": 19,
+  "speed": 84,
+  "xp": 11,
+  "params": {
+   "chargeRange": 320,
+   "chargeSpeed": 420,
+   "chargeTime": 0.6,
+   "windup": 0.25,
+   "chargeCooldown": 1.3,
+   "jumpPower": 360
+  }
+ },
+ "kopljasica": {
+  "sprite": "enemy_kopljasica",
+  "behavior": "sniper",
+  "hp": 46,
+  "damage": 22,
+  "speed": 40,
+  "xp": 11,
+  "params": {
+   "keepDistance": 260,
+   "aimTime": 0.7,
+   "shotSpeed": 540,
+   "shotCooldown": 2
+  },
+  "projectile": "javelin"
+ },
+ "kuglas": {
+  "sprite": "enemy_kuglas",
+  "behavior": "bomber",
+  "hp": 70,
+  "damage": 21,
+  "speed": 36,
+  "xp": 12,
+  "params": {
+   "keepDistance": 150,
+   "throwCooldown": 2.2,
+   "throwSpeed": 200,
+   "blast": 46
+  },
+  "projectile": "shotput"
+ },
+ "kladivas": {
+  "sprite": "enemy_kladivas",
+  "behavior": "spinner",
+  "hp": 66,
+  "damage": 21,
+  "speed": 52,
+  "xp": 12,
+  "params": {
+   "spinTime": 1.6,
+   "spinCooldown": 1.8,
+   "radius": 36
+  }
+ },
+ "kosarkas": {
+  "sprite": "enemy_kosarkas",
+  "behavior": "roller",
+  "hp": 64,
+  "damage": 21,
+  "speed": 58,
+  "xp": 12,
+  "params": {
+   "keepDistance": 130,
+   "throwCooldown": 1.5,
+   "throwSpeed": 230,
+   "jumpPower": 400
+  },
+  "projectile": "basketball"
+ },
+ "dj": {
+  "sprite": "enemy_dj",
+  "behavior": "buffer",
+  "hp": 58,
+  "damage": 18,
+  "speed": 40,
+  "xp": 12,
+  "params": {
+   "keepDistance": 180,
+   "buffCooldown": 3.2,
+   "radius": 150,
+   "buffTime": 3.5
+  }
+ },
+ "grafiter": {
+  "sprite": "enemy_grafiter",
+  "behavior": "shooter",
+  "hp": 52,
+  "damage": 20,
+  "speed": 48,
+  "xp": 12,
+  "params": {
+   "keepDistance": 120,
+   "shotCooldown": 1.6,
+   "shotSpeed": 220,
+   "burst": 5,
+   "spread": 40
+  },
+  "projectile": "paint"
+ },
+ "plesacica": {
+  "sprite": "enemy_plesacica",
+  "behavior": "spinner",
+  "hp": 60,
+  "damage": 21,
+  "speed": 62,
+  "xp": 12,
+  "params": {
+   "spinTime": 1.4,
+   "spinCooldown": 1.6,
+   "radius": 30
+  }
+ },
+ "prtljag": {
+  "sprite": "enemy_prtljag",
+  "behavior": "roller",
+  "hp": 76,
+  "damage": 24,
+  "speed": 46,
+  "xp": 13,
+  "params": {
+   "keepDistance": 140,
+   "throwCooldown": 1.6,
+   "throwSpeed": 220
+  },
+  "projectile": "suitcase"
+ },
+ "stjuardesa": {
+  "sprite": "enemy_stjuardesa",
+  "behavior": "charger",
+  "hp": 80,
+  "damage": 25,
+  "speed": 46,
+  "xp": 13,
+  "params": {
+   "chargeRange": 240,
+   "chargeSpeed": 320,
+   "windup": 0.4,
+   "chargeTime": 0.9,
+   "chargeCooldown": 1.6
+  }
+ },
+ "marsal": {
+  "sprite": "enemy_marsal",
+  "behavior": "sniper",
+  "hp": 60,
+  "damage": 26,
+  "speed": 40,
+  "xp": 13,
+  "params": {
+   "keepDistance": 250,
+   "aimTime": 0.6,
+   "shotSpeed": 560,
+   "shotCooldown": 1.9
+  },
+  "projectile": "signal"
+ },
+ "dronas": {
+  "sprite": "enemy_dronas",
+  "behavior": "summoner",
+  "hp": 56,
+  "damage": 20,
+  "speed": 42,
+  "xp": 13,
+  "params": {
+   "keepDistance": 200,
+   "shotCooldown": 2.4,
+   "count": 3,
+   "turn": 3.6,
+   "life": 6
+  },
+  "projectile": "drone"
+ }
 }

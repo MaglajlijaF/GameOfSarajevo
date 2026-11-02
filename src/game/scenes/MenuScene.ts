@@ -101,7 +101,9 @@ export class MenuScene extends Phaser.Scene {
       this.info.add(text(this, x + 8, y + 30, G.t(cleared ? 'menu.replayReward' : 'menu.reward', { km }), { color: COLORS.km }));
       const wName = G.t(`weapon.${save.selectedStarter}.noun`);
       this.info.add(text(this, x + 8, y + 42, G.t('menu.weapon', { name: wName }), { color: COLORS.dim }));
-      if (st.placeholder) this.info.add(text(this, x + 8, y + 54, G.t('menu.preview'), { color: COLORS.accent }));
+      const stars = Math.min(10, Math.round(st.difficulty * 2));
+      this.info.add(text(this, x + 8, y + 54, G.t('menu.difficulty', { d: '' }), { color: COLORS.dim }));
+      for (let i = 0; i < 10; i++) this.info.add(this.add.rectangle(x + 76 + i * 8, y + 58, 6, 6, i < stars ? 0xe8483a : 0x3a3448).setStrokeStyle(1, 0x1a1420));
       const play = new Button(this, x + w - 52, y + h - 16, G.t('menu.play'), () => this.startStage(id), { w: 88, h: 20, fill: 0x3a7a3a });
       this.info.add(play);
     }

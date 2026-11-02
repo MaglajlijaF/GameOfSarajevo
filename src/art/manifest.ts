@@ -34,6 +34,7 @@ function fx(): Record<string, AssetEntry> {
         for (let d = 13; d <= 19; d++) p.set(20 + Math.cos(r) * d, 20 + Math.sin(r) * d, d > 17 ? '#c8d0e0' : '#ffffff');
       }
     }),
+    fx_trap: one(28, 8, (p) => { p.rect(2, 3, 24, 5, '#ffffff'); p.rect(0, 5, 28, 3, '#ffffff'); for (let x = 2; x < 26; x += 5) { p.set(x, 2, '#ffffff'); p.set(x + 1, 1, '#ffffff'); } }),
     fx_star: one(7, 7, (p) => p.stamp(['...y...', '...y...', '.yyly..', 'yylllyy', '.yyly..', '...y...', '...y...'])),
     fx_shadow: one(12, 3, (p) => { p.rect(1, 0, 10, 3, '#000000'); p.rect(0, 1, 12, 1, '#000000'); }),
     ui_lock: one(9, 10, (p) => p.stamp(['..kkkkk..', '.kGGGGGk.', '.kGk.kGk.', '.kGk.kGk.', 'kkkkkkkkk', 'kyyyyyyyk', 'kyyykyyyk', 'kyyykyyyk', 'kyyyyyyyk', 'kkkkkkkkk'])),
@@ -54,18 +55,23 @@ export function buildManifest(data: GameData): Record<string, AssetEntry> {
   for (const b of Object.values(data.bosses)) {
     const r = recipes[b.sprite];
     if (!r) continue;
+    const aura = b.color ?? '#ff7a2a';
     m[b.sprite] = {
       kind: 'generated', frameWidth: FRAME * 2, frameHeight: FRAME * 2,
       build: () => bossFrames(r, (p, i) => {
-        // Boss signature: a big copper hammer and a heavy moustache.
         if (i >= 11) return;
-        const up = i === 8 || i === 6;
-        const hx = up ? 30 : 34, hy = up ? 4 : 18;
-        p.rect(hx, hy, 3, 20, '#8a5a2e');
-        p.rect(hx - 4, hy - 2, 11, 7, '#c87a3a');
-        p.rect(hx - 4, hy - 2, 11, 2, '#f0a860');
-        p.rect(hx - 4, hy + 4, 11, 1, '#8a4a1e');
-        p.outline('#1a1420');
+        if (b.id === 'kazandzija') {
+          // Signature oversized copper hammer.
+          const up = i === 8 || i === 6;
+          const hx = up ? 30 : 34, hy = up ? 4 : 18;
+          p.rect(hx, hy, 3, 20, '#8a5a2e');
+          p.rect(hx - 4, hy - 2, 11, 7, '#c87a3a');
+          p.rect(hx - 4, hy - 2, 11, 2, '#f0a860');
+          p.rect(hx - 4, hy + 4, 11, 1, '#8a4a1e');
+          p.outline('#1a1420');
+        }
+        // Every boss gets an aura outline in its colour so it reads as a boss.
+        p.outline(aura);
       }),
     };
   }

@@ -1,6 +1,7 @@
 import { Pix } from './pixel';
 import { color, shade } from './palette';
 import type { CharacterRecipe } from '../core/types';
+import { PROPS } from './props';
 
 /**
  * Procedural humanoid generator. A recipe (palette names + style ids) and a
@@ -113,6 +114,9 @@ export function drawHumanoid(r: CharacterRecipe, pose: Pose): Pix {
   if (r.accessory === 'tray' ) { p.rect(hxp - 1, hyp - 1, 6, 1, color('copper')); p.rect(hxp, hyp - 2, 4, 1, color('copperDark')); }
   if (r.accessory === 'cornbag') { p.rect(hxp, hyp, 4, 4, color('tan')); p.rect(hxp, hyp, 4, 1, color('khaki')); }
   if (r.accessory === 'parcel') { p.rect(hxp - 1, hyp - 2, 5, 4, color('tan')); p.rect(hxp + 1, hyp - 2, 1, 4, color('brown')); }
+  const prop = r.prop ? PROPS[r.prop] : undefined;
+  if (prop?.feet) p.stamp(prop.rows, cx + 1 - prop.ax, 24 - prop.rows.length);
+  else if (prop) p.stamp(prop.rows, hxp - prop.ax + 1, hyp - prop.ay + 1);
   if (r.accessory === 'crate') { p.rect(cx + 2, tTop - 1, 7, 7, color('brown')); p.rect(cx + 2, tTop - 1, 7, 1, color('tan')); p.line(cx + 2, tTop, cx + 8, tTop + 5, color('brownDark')); }
 
   p.outline('#1a1420');

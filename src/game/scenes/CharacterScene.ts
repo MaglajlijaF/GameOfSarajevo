@@ -17,6 +17,7 @@ export class CharacterScene extends Phaser.Scene {
       panel(this, x - 40, y, 80, 120, sel ? 0x3a5a3a : 0x2e2846);
       const s = this.add.sprite(x, y + 50, c.sprite).setScale(3).play(`${c.sprite}_idle`);
       text(this, x, y + 92, G.t(`character.${c.id}`), { origin: [0.5, 0], color: sel ? COLORS.gold : COLORS.text });
+      text(this, x, y + 104, G.t(c.gender === 'm' ? 'character.male' : 'character.female'), { origin: [0.5, 0], color: COLORS.dim });
       const z = this.add.zone(x - 40, y, 80, 120).setOrigin(0).setInteractive({ useHandCursor: true });
       z.on('pointerover', () => s.play(`${c.sprite}_run`, true));
       z.on('pointerout', () => s.play(`${c.sprite}_idle`, true));

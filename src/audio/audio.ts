@@ -1,4 +1,4 @@
-import { Rng } from '../core/rng';
+import { bossMusic, compose, type NoteEvent, type Song } from './compose';
 import type { MusicDef } from '../core/types';
 
 /**
@@ -8,9 +8,11 @@ import type { MusicDef } from '../core/types';
 export type Sfx = 'jump' | 'dash' | 'swing' | 'shoot' | 'hit' | 'hurt' | 'kill' | 'levelup' | 'coin' | 'click'
   | 'boss' | 'slam' | 'wave' | 'victory' | 'defeat' | 'pulse' | 'gate' | 'pickup' | 'deny';
 
-const SCALES: Record<string, number[]> = {
-  major: [0, 2, 4, 5, 7, 9, 11], minor: [0, 2, 3, 5, 7, 8, 10], dorian: [0, 2, 3, 5, 7, 9, 10], hijaz: [0, 1, 4, 5, 7, 8, 10],
-};
+/** Songs imported from MIDI with scripts/import-midi.mjs. */
+const TRACKS: Record<string, Song> = Object.fromEntries(
+  Object.entries(import.meta.glob('../data/music/*.json', { eager: true, import: 'default' }))
+    .map(([path, song]) => [path.split('/').pop()!.replace('.json', ''), song as Song]),
+);
 
 const midiHz = (n: number) => 440 * Math.pow(2, (n - 69) / 12);
 
@@ -113,46 +115,50 @@ class AudioEngine {
     }
   }
 
-  /** Starts a looping procedurally composed tune. Same def → same tune. */
-  playMusic(def: MusicDef): void {
+  /**
+   * Starts a looping tune: an imported song if the stage names a `track`
+   * (src/data/music/<track>.json), otherwise one composed from the stage's style.
+   */
+  playMusic(def: MusicDef, boss = false): void {
     this.stopMusic();
     const c = this.ensure();
     if (!c) return;
-    const rng = new Rng(def.seed);
-    const scale = SCALES[def.scale] ?? SCALES.minor;
-    const steps = 32;
-    const deg = (d: number) => { const o = Math.floor(d / scale.length); return scale[((d % scale.length) + scale.length) % scale.length] + 12 * o; };
-    // Melody: random walk on scale degrees with rests; 2 phrases A A' 
-    const phrase: (number | null)[] = [];
-    let cur = 4;
-    for (let i = 0; i < 16; i++) {
-      if (rng.chance(0.22) && i % 4 !== 0) { phrase.push(null); continue; }
-      cur = Math.max(0, Math.min(11, cur + rng.pick([-2, -1, -1, 0, 1, 1, 2, 3, -3])));
-      phrase.push(cur);
-    }
-    const melody = [...phrase, ...phrase.map((n, i) => (n === null || i < 12 ? n : Math.max(0, n - 2)))];
-    const chords = [0, 3, 4, 0].map((x) => (rng.chance(0.3) ? x + 1 : x));
-    const stepDur = 60 / def.tempo / 2;
+    const imported = def.track ? TRACKS[def.track] : undefined;
+    const song: Song = imported
+      ? { ...imported, tempo: Math.round(imported.tempo * (boss ? 1.15 : 1)), lead: def.lead ?? imported.lead }
+      : compose(boss ? bossMusic(def) : def);
+    this.currentSong = song;
+    const byStep: NoteEvent[][] = Array.from({ length: song.steps }, () => []);
+    for (const e of song.events) if (e.s >= 0 && e.s < song.steps) byStep[e.s].push(e);
+    const stepDur = 60 / song.tempo / 4;
+    const lead = (song.lead ?? 'square') as string;
+    const leadWave: OscillatorType = lead === 'saw' ? 'sawtooth' : lead === 'triangle' ? 'triangle' : 'square';
     let step = 0;
     let next = c.currentTime + 0.1;
     const tick = () => {
       if (!this.ctx) return;
       while (next < this.ctx.currentTime + 0.25) {
-        const s = step % steps;
-        const n = melody[s];
-        if (n !== null) this.tone('square', midiHz(def.root + 12 + deg(n)), midiHz(def.root + 12 + deg(n)), stepDur * 0.9, 0.18, this.music, next);
-        const chord = chords[Math.floor(s / 8)];
-        if (s % 2 === 0) this.tone('triangle', midiHz(def.root - 12 + deg(chord)), midiHz(def.root - 12 + deg(chord)), stepDur * 1.6, 0.35, this.music, next);
-        if (s % 4 === 2) this.tone('square', midiHz(def.root + deg(chord + 2)), midiHz(def.root + deg(chord + 2)), stepDur * 0.5, 0.08, this.music, next);
-        if (s % 4 === 0) this.noise(0.08, 0.25, this.music, 200, next);
-        if (s % 4 === 2) this.noise(0.05, 0.12, this.music, 6000, next);
+        for (const e of byStep[step % song.steps]) {
+          const dur = e.l * stepDur;
+          if (e.c === 0) {
+            this.tone(leadWave, midiHz(e.n), midiHz(e.n), dur * 0.92, lead === 'pulse' ? 0.13 : 0.17, this.music, next);
+            if (lead === 'pulse') this.tone('square', midiHz(e.n) * 1.004, midiHz(e.n) * 1.004, dur * 0.9, 0.08, this.music, next);
+          } else if (e.c === 1) this.tone('triangle', midiHz(e.n), midiHz(e.n), dur * 0.95, 0.36, this.music, next);
+          else if (e.c === 2) this.tone('square', midiHz(e.n), midiHz(e.n), Math.min(dur, stepDur * 0.8), 0.05, this.music, next);
+          else if (e.n === 0) { this.tone('sine', 140, 45, 0.12, 0.5, this.music, next); }
+          else if (e.n === 1) this.noise(0.09, 0.22, this.music, 3500, next);
+          else this.noise(0.03, 0.08, this.music, 9000, next);
+        }
         next += stepDur;
         step++;
       }
     };
     tick();
-    this.seqTimer = window.setInterval(tick, 60);
+    this.seqTimer = window.setInterval(tick, 50);
   }
+
+  /** The tune currently playing (for tests/debugging). */
+  currentSong: Song | null = null;
 
   stopMusic(): void {
     if (this.seqTimer !== null) { clearInterval(this.seqTimer); this.seqTimer = null; }
@@ -160,4 +166,4 @@ class AudioEngine {
 }
 
 export const audio = new AudioEngine();
-export const MENU_MUSIC: MusicDef = { seed: 4242, tempo: 112, scale: 'hijaz', root: 57 };
+export const MENU_MUSIC: MusicDef = { seed: 4242, tempo: 108, scale: 'hijaz', root: 57, lead: 'triangle', drums: 'halftime', style: 'sevdah' };

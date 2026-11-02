@@ -74,3 +74,44 @@ export function buildLevel(stage: StageDef, layouts: Record<string, string[]>): 
 
   return { width, height: LEVEL_H, cells, sections, playerSpawn: { x: 4, y: 18 } };
 }
+
+/** How far the player can get with a double jump, in tiles (kept conservative). */
+export const REACH = { up: 7, side: 6 };
+
+/**
+ * Verifies an arena layout: every spawn marker and every one-way platform must
+ * be reachable from the ground on the arena's left edge, using jumps (REACH)
+ * and ladders. Returns a list of problems (empty = OK).
+ */
+export function checkLayoutReachability(rows: string[]): string[] {
+  const H = rows.length, W = rows[0].length;
+  const cell = (x: number, y: number): Cell => (x < 0 || y < 0 || x >= W || y >= H ? CELL.SOLID : (CHAR_CELL[rows[y][x]] ?? CELL.EMPTY));
+  const solidish = (c: Cell) => c === CELL.SOLID || c === CELL.ONEWAY;
+  const stand = (x: number, y: number) => cell(x, y) !== CELL.SOLID && (solidish(cell(x, y + 1)) || cell(x, y) === CELL.LADDER);
+  const nodes: [number, number][] = [];
+  for (let y = 0; y < H - 1; y++) for (let x = 0; x < W; x++) if (stand(x, y) && cell(x, y) !== CELL.HAZARD) nodes.push([x, y]);
+  const key = (x: number, y: number) => y * W + x;
+  const seen = new Set<number>();
+  const start = nodes.find(([x, y]) => x <= 2 && y >= 18);
+  if (!start) return ['no ground at the left edge'];
+  const queue = [start];
+  seen.add(key(...start));
+  while (queue.length) {
+    const [ax, ay] = queue.shift()!;
+    for (const [bx, by] of nodes) {
+      const k = key(bx, by);
+      if (seen.has(k)) continue;
+      const dx = Math.abs(bx - ax), dy = by - ay;
+      const ladder = cell(ax, ay) === CELL.LADDER || cell(bx, by) === CELL.LADDER;
+      const ok = (ladder && dx <= 1 && Math.abs(dy) <= 1) || (dy >= -REACH.up && dx <= REACH.side + Math.max(0, dy) / 2);
+      if (ok) { seen.add(k); queue.push([bx, by]); }
+    }
+  }
+  const problems: string[] = [];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const ch = rows[y][x];
+    if ((ch === 'S' || ch === 'B') && !seen.has(key(x, y)) && stand(x, y)) problems.push(`spawn ${ch} at ${x},${y} unreachable`);
+    if (ch === '=' && y > 0 && cell(x, y - 1) !== CELL.SOLID && !seen.has(key(x, y - 1))) problems.push(`platform at ${x},${y} unreachable`);
+  }
+  return problems;
+}

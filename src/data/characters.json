@@ -1,4 +1,14 @@
 [
   { "id": "amar", "gender": "m", "sprite": "player_amar",
-    "recipe": { "skin": "skin2", "hair": "hairBrown", "hairStyle": "short", "shirt": "blue", "shirt2": "blueDark", "pants": "denim", "shoes": "white", "accessory": "scarf", "accessoryColor": "red" } }
+    "recipe": { "skin": "skin2", "hair": "hairBrown", "hairStyle": "short", "shirt": "blue", "shirt2": "blueDark", "pants": "denim", "shoes": "white", "accessory": "scarf", "accessoryColor": "red" } },
+  { "id": "kenan", "gender": "m", "sprite": "player_kenan",
+    "recipe": { "skin": "skin3", "hair": "hairBlack", "hairStyle": "curly", "shirt": "green", "shirt2": "greenDark", "pants": "khaki", "shoes": "brownDark", "accessory": "bag", "accessoryColor": "orange" } },
+  { "id": "dino", "gender": "m", "sprite": "player_dino",
+    "recipe": { "skin": "skin1", "hair": "hairBlond", "hairStyle": "cap", "shirt": "red", "shirt2": "redDark", "pants": "black", "shoes": "white", "accessory": "stripes", "accessoryColor": "white" } },
+  { "id": "lejla", "gender": "f", "sprite": "player_lejla",
+    "recipe": { "skin": "skin2", "hair": "hairBlack", "hairStyle": "long", "shirt": "purple", "shirt2": "purpleDark", "pants": "denim", "shoes": "white", "accessory": "scarf", "accessoryColor": "yellow" } },
+  { "id": "amra", "gender": "f", "sprite": "player_amra",
+    "recipe": { "skin": "skin3", "hair": "hairAuburn", "hairStyle": "ponytail", "shirt": "teal", "shirt2": "tealDark", "pants": "black", "shoes": "red", "accessory": "vest", "accessoryColor": "orange" } },
+  { "id": "sara", "gender": "f", "sprite": "player_sara",
+    "recipe": { "skin": "skin1", "hair": "hairRed", "hairStyle": "bob", "shirt": "yellow", "shirt2": "orange", "pants": "navy", "shoes": "white", "accessory": "glasses" } }
 ]

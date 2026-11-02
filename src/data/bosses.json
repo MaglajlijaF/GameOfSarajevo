@@ -1,9 +1,447 @@
 {
-  "kazandzija": {
-    "sprite": "boss_kazandzija", "hp": 950, "damage": 18, "xp": 40, "projectile": "pot", "summon": "prodavac",
-    "phases": [
-      { "hpBelow": 1.0, "attacks": ["slam", "charge", "volley"], "pause": 1.2, "speed": 55 },
-      { "hpBelow": 0.5, "attacks": ["rain", "shockwave", "leap", "charge", "summon"], "pause": 0.8, "speed": 75 }
-    ]
-  }
+ "kazandzija": {
+  "sprite": "boss_kazandzija",
+  "hp": 950,
+  "damage": 18,
+  "xp": 40,
+  "projectile": "pot",
+  "summon": "prodavac",
+  "color": "#c87a3a",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "slam",
+     "charge",
+     "volley"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "rain",
+     "shockwave",
+     "leap",
+     "charge",
+     "summon"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "cesmarka": {
+  "sprite": "boss_cesmarka",
+  "hp": 1050,
+  "damage": 19,
+  "xp": 50,
+  "projectile": "drop",
+  "summon": "vrtlarica",
+  "color": "#4aa3df",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "barrage",
+     "trap",
+     "charge"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "spiral",
+     "rain",
+     "trap",
+     "pull",
+     "leap"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "trener_klizanja": {
+  "sprite": "boss_trener_klizanja",
+  "hp": 1100,
+  "damage": 20,
+  "xp": 55,
+  "projectile": "puck",
+  "summon": "klizacica",
+  "color": "#9ad0f0",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "zigzag",
+     "spiral",
+     "trap"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "zigzag",
+     "barrage",
+     "spiral",
+     "summon",
+     "teleport"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "direktorica": {
+  "sprite": "boss_direktorica",
+  "hp": 1150,
+  "damage": 21,
+  "xp": 60,
+  "projectile": "paper",
+  "summon": "sluzbenik",
+  "color": "#e04a6a",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "laser",
+     "barrage",
+     "summon"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "laser",
+     "shield",
+     "meteor",
+     "zigzag",
+     "barrage"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "trener": {
+  "sprite": "boss_trener",
+  "hp": 1200,
+  "damage": 22,
+  "xp": 65,
+  "projectile": "ball",
+  "summon": "navijac",
+  "color": "#5ad05a",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "roll",
+     "pull",
+     "charge"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "roll",
+     "shockwave",
+     "summon",
+     "barrage",
+     "charge"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "vozacica": {
+  "sprite": "boss_vozacica",
+  "hp": 1300,
+  "damage": 23,
+  "xp": 70,
+  "projectile": "bolt",
+  "summon": "kondukter",
+  "color": "#f2d64b",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "charge",
+     "laser",
+     "shockwave"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "charge",
+     "zigzag",
+     "laser",
+     "rain",
+     "summon"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "velemajstor": {
+  "sprite": "boss_velemajstor",
+  "hp": 1400,
+  "damage": 24,
+  "xp": 75,
+  "projectile": "pawn",
+  "summon": "sahista",
+  "color": "#f4f4f4",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "teleport",
+     "spiral",
+     "laser"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "teleport",
+     "barrage",
+     "laser",
+     "summon",
+     "shield"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "upravnik": {
+  "sprite": "boss_upravnik",
+  "hp": 1500,
+  "damage": 25,
+  "xp": 80,
+  "projectile": "flowerpot",
+  "summon": "perac",
+  "color": "#b48ae0",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "rain",
+     "trap",
+     "pull"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "rain",
+     "teleport",
+     "shield",
+     "meteor",
+     "trap"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "pcelarka": {
+  "sprite": "boss_pcelarka",
+  "hp": 1650,
+  "damage": 26,
+  "xp": 85,
+  "projectile": "honey",
+  "summon": "pcelar",
+  "color": "#f2d64b",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "spiral",
+     "meteor",
+     "summon"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "spiral",
+     "pull",
+     "meteor",
+     "barrage",
+     "shield"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "majstor_zidar": {
+  "sprite": "boss_majstor_zidar",
+  "hp": 1800,
+  "damage": 27,
+  "xp": 90,
+  "projectile": "brick",
+  "summon": "zidar",
+  "color": "#c8503a",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "trap",
+     "rain",
+     "leap"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "shockwave",
+     "rain",
+     "trap",
+     "zigzag",
+     "summon",
+     "meteor"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "desetobojka": {
+  "sprite": "boss_desetobojka",
+  "hp": 1950,
+  "damage": 28,
+  "xp": 95,
+  "projectile": "javelin",
+  "summon": "sprinter",
+  "color": "#e8483a",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "barrage",
+     "zigzag",
+     "leap"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "meteor",
+     "zigzag",
+     "barrage",
+     "roll",
+     "shockwave",
+     "teleport"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "mc_bloka": {
+  "sprite": "boss_mc_bloka",
+  "hp": 2100,
+  "damage": 29,
+  "xp": 100,
+  "projectile": "vinyl",
+  "summon": "plesacica",
+  "color": "#8a4ab8",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "spiral",
+     "shockwave",
+     "pull"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.5,
+    "attacks": [
+     "spiral",
+     "laser",
+     "shield",
+     "summon",
+     "zigzag",
+     "barrage"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   }
+  ]
+ },
+ "kapetanica": {
+  "sprite": "boss_kapetanica",
+  "hp": 2400,
+  "damage": 30,
+  "xp": 120,
+  "projectile": "suitcase",
+  "summon": "stjuardesa",
+  "color": "#3a6ad8",
+  "phases": [
+   {
+    "hpBelow": 1,
+    "attacks": [
+     "zigzag",
+     "meteor",
+     "laser"
+    ],
+    "pause": 1.2,
+    "speed": 55
+   },
+   {
+    "hpBelow": 0.67,
+    "attacks": [
+     "rain",
+     "laser",
+     "zigzag",
+     "shield",
+     "barrage"
+    ],
+    "pause": 0.85,
+    "speed": 77
+   },
+   {
+    "hpBelow": 0.33,
+    "attacks": [
+     "spiral",
+     "meteor",
+     "teleport",
+     "laser",
+     "summon",
+     "charge"
+    ],
+    "pause": 0.5,
+    "speed": 99
+   }
+  ]
+ }
 }

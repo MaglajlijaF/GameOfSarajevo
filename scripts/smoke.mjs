@@ -89,6 +89,17 @@ console.log('double jump rise', y0 - y2);
 if (y0 - y2 < 80) throw new Error('double jump too low');
 await page.screenshot({ path: `${out}/4-movement.png` });
 
+// Enemy projectiles must hurt the player (regression: overlap argument order).
+const projHit = await page.evaluate(async () => {
+  const st = window.__game.scene.getScene('Stage');
+  st.player.hp = 100; st.player.invuln = 0;
+  st.fireEnemyProjectile('corn', st.player.x + 40, st.player.y, -200, 0, 0, 7);
+  await new Promise((r) => setTimeout(r, 600));
+  return 100 - st.player.hp;
+});
+console.log('enemy projectile damage', projHit);
+if (projHit <= 0) throw new Error('enemy projectiles do not hurt the player');
+
 for (const sc of ['Settings', 'Character', 'Shop', 'Menu']) {
   await page.evaluate((k) => window.__game.scene.getScenes(true)[0].scene.start(k), sc);
   await wait(400);
