@@ -1,0 +1,20 @@
+{
+  "gravity": 900,
+  "runSpeed": 118,
+  "groundAccel": 1400,
+  "airAccel": 900,
+  "friction": 1600,
+  "jumpVelocity": 350,
+  "doubleJumpVelocity": 320,
+  "jumpCutFactor": 0.45,
+  "coyoteTime": 0.1,
+  "jumpBuffer": 0.12,
+  "dashSpeed": 380,
+  "dashTime": 0.16,
+  "dashCooldown": 0.65,
+  "climbSpeed": 85,
+  "maxFall": 520,
+  "invulnTime": 0.9,
+  "hazardDamage": 12,
+  "enemyContactFactor": 0.6
+}

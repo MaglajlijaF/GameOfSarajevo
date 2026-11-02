@@ -1,0 +1,7 @@
+{
+  "enemy_prodavac": { "skin": "skin2", "hair": "hairBlack", "hairStyle": "bald", "shirt": "cream", "shirt2": "tan", "pants": "brownDark", "shoes": "brownDark", "accessory": "tray", "accessoryColor": "copper" },
+  "enemy_golubar": { "skin": "skin1", "hair": "hairGrey", "hairStyle": "hat", "shirt": "olive", "shirt2": "greenDark", "pants": "greyDark", "shoes": "black", "accessory": "cornbag", "accessoryColor": "khaki" },
+  "enemy_dostavljac": { "skin": "skin3", "hair": "hairBrown", "hairStyle": "cap", "shirt": "orange", "shirt2": "red", "pants": "navy", "shoes": "white", "accessory": "parcel", "accessoryColor": "orange" },
+  "enemy_nosac": { "skin": "skin2", "hair": "hairBrown", "hairStyle": "beanie", "shirt": "teal", "shirt2": "tealDark", "pants": "khaki", "shoes": "brownDark", "accessory": "crate", "accessoryColor": "purple" },
+  "boss_kazandzija": { "skin": "skin3", "hair": "hairGrey", "hairStyle": "bald", "shirt": "redDark", "shirt2": "brownDark", "pants": "brownDark", "shoes": "black", "accessory": "apron", "accessoryColor": "brown" }
+}

@@ -25,7 +25,7 @@ export function buildGameData(): GameData {
     buffs: withIds<BuffDef>(buffsFile),
     shop: shopFile as ShopFile,
     characters: charactersFile as CharacterDef[],
-    themes: themesFile as Record<string, ThemeDef>,
+    themes: themesFile as unknown as Record<string, ThemeDef>,
     layouts: layoutsFile as Record<string, string[]>,
   };
   const problems = validateGameData(data);

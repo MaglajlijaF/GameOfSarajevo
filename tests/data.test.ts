@@ -37,3 +37,15 @@ describe('wave director', () => {
     expect(wd.isCleared(alive)).toBe(true);
   });
 });
+
+import { buildLevel, CELL } from '../src/core/level';
+describe('level assembly', () => {
+  it('builds 5 arenas + boss with spawn points and a walkable start', () => {
+    const plan = buildLevel(data.stages.kovaci, data.layouts);
+    expect(plan.sections.map((s) => s.kind)).toEqual(['arena', 'arena', 'arena', 'arena', 'arena', 'boss']);
+    plan.sections.forEach((s) => expect(s.spawns.length).toBeGreaterThan(0));
+    expect(plan.sections[5].bossSpawn).toBeDefined();
+    expect(plan.cells[plan.playerSpawn.y + 2][plan.playerSpawn.x]).toBe(CELL.SOLID);
+    for (const row of plan.cells) expect(row).toHaveLength(plan.width);
+  });
+});
