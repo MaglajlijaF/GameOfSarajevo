@@ -32,6 +32,11 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
   flashT = 0;
   hitTimers = new Map<number, number>();
   kbT = 0;
+  /** Stunned (Tepsija): frozen in place with stars over the head. */
+  stunT = 0;
+  /** After a stun, a short window where the enemy can't be stunned again (bosses only). */
+  stunImmune = 0;
+  protected stunFx: Phaser.GameObjects.Image | null = null;
   private spinHitT = 0;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -56,7 +61,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.ai = 'spawn';
     this.t = 0.45;
     this.cd = (0.6 + Math.random() * 0.8) / this.aggro;
-    this.slowT = 0; this.burnT = 0; this.flashT = 0; this.kbT = 0; this.buffT = 0;
+    this.slowT = 0; this.burnT = 0; this.flashT = 0; this.kbT = 0; this.buffT = 0; this.stunT = 0; this.stunImmune = 0;
+    this.stunFx?.setVisible(false);
     this.hitTimers.clear();
     this.setAlpha(0).setDepth(15).clearTint().setScale(1).setAngle(0);
     this.scene.tweens.add({ targets: this, alpha: 1, duration: 300 });
@@ -98,6 +104,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     else this.clearTint();
 
     if (this.ai === 'spawn') { b.setVelocityX(0); if (this.t <= 0) this.ai = 'move'; return; }
+    if (this.tickStun(dt)) return;
     if (this.kbT > 0 && this.ai !== 'hang') { this.anim('hurt'); return; }
 
     const dx = pl.x - this.x;
@@ -296,10 +303,41 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.animMove();
         break;
       }
+      case 'dummy':
+        b.setVelocityX(0);
+        this.anim('idle');
+        break;
       default:
         b.setVelocityX(towards * spd);
     }
     if (this.ai !== 'spin') this.setFlipX(this.dir < 0);
+  }
+
+  /**
+   * Stuns for `sec` seconds. Returns false if the enemy resisted (bosses get a
+   * shorter stun and a few seconds of immunity afterwards, so they can't be locked).
+   */
+  stun(sec: number): boolean {
+    if (!this.vulnerable || sec <= 0 || this.stunImmune > 0) return false;
+    if (this.isBoss) { sec *= 0.35; this.stunImmune = sec + 3; }
+    this.stunT = Math.max(this.stunT, sec);
+    if (this.ai === 'windup' || this.ai === 'aim' || this.ai === 'charge' || this.ai === 'spin') { this.ai = 'move'; this.angle = 0; }
+    if (this.def.behavior === 'dropper' && this.ai === 'hang') { this.ai = 'drop'; this.body2.setAllowGravity(true); }
+    return true;
+  }
+
+  /** Runs the stun state; true while stunned (skip AI this frame). */
+  protected tickStun(dt: number): boolean {
+    this.stunImmune = Math.max(0, this.stunImmune - dt);
+    if (this.stunT <= 0) { this.stunFx?.setVisible(false); return false; }
+    this.stunT -= dt;
+    this.body2.setVelocityX(0);
+    this.anims.play(`${this.def.sprite}_hurt`, true);
+    if (!this.stunFx) this.stunFx = this.scene.add.image(0, 0, 'fx_stun').setDepth(26);
+    const top = this.body2.top;
+    this.stunFx.setVisible(true).setPosition(this.x + Math.sin(this.scene.time.now / 90) * 2, top - 5).setScale(this.isBoss ? 2 : 1);
+    if (this.stunT <= 0) this.stunFx.setVisible(false);
+    return true;
   }
 
   private keepDistance(keep: number, towards: number, adx: number, spd: number, dy: number) {
@@ -339,7 +377,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.hp -= amount;
     this.flashT = 0.08;
     if (kx || ky) {
-      const resist = this.def.behavior === 'charger' || this.def.behavior === 'shielder' ? 0.4 : 1;
+      const resist = this.def.behavior === 'dummy' ? 0 : this.def.behavior === 'charger' || this.def.behavior === 'shielder' ? 0.4 : 1;
       this.body2.setVelocity(kx * resist, Math.min(this.body2.velocity.y, ky * resist));
       this.kbT = 0.12;
       if (this.ai === 'windup' || this.ai === 'aim') { this.ai = 'move'; this.cd = 0.5; }
@@ -352,6 +390,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
   protected startDying() {
     this.dying = true;
+    this.stunT = 0;
+    this.stunFx?.setVisible(false);
     this.clearTint();
     this.angle = 0;
     this.body2.setAllowGravity(true);
@@ -363,6 +403,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   kill(): void {
+    this.stunFx?.setVisible(false);
+    this.stunT = 0;
     this.alive = false;
     this.dying = false;
     this.disableBody(true, true);

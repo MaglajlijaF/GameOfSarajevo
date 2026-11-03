@@ -15,6 +15,7 @@
     "test": "vitest run",
     "smoke": "node scripts/smoke.mjs",
     "playthrough": "node scripts/playthrough.mjs",
+    "features": "node scripts/features.mjs",
     "dist:win": "npm run build && electron-builder --win --x64 --publish never"
   },
   "build": {

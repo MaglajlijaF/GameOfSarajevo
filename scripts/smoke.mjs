@@ -15,6 +15,7 @@ const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 page.on('pageerror', (e) => errors.push('pageerror: ' + e.message + '\n' + (e.stack ?? '').split('\n').slice(0, 6).join('\n')));
 page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
+await page.addInitScript(() => { if (!localStorage.getItem('gameofsarajevo.save')) localStorage.setItem('gameofsarajevo.save', JSON.stringify({ seenIntro: true, tutorialDone: true })); });
 await page.goto('http://localhost:4173/');
 const wait = (ms) => page.waitForTimeout(ms);
 const scene = () => page.evaluate(() => window.__game.scene.getScenes(true).map((s) => s.scene.key).join(','));

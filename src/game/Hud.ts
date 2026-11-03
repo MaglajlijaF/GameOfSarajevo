@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { COLORS, panel, setText, text } from './ui/ui';
+import { COLORS, keyLabel, panel, setText, text } from './ui/ui';
 import { G } from './services';
 
 /** Screen-space HUD for a stage run. Pure view: StageScene pushes values in. */
@@ -16,6 +16,12 @@ export class Hud {
   private sub: Phaser.GameObjects.BitmapText;
   private arrow: Phaser.GameObjects.Container;
   bossVisible = false;
+  private nameText: Phaser.GameObjects.BitmapText;
+  private superBox: Phaser.GameObjects.Container;
+  private superIcon: Phaser.GameObjects.Image;
+  private superName: Phaser.GameObjects.BitmapText;
+  private superKey: Phaser.GameObjects.BitmapText;
+  private hasSuper = false;
 
   constructor(private scene: Phaser.Scene) {
     const fix = <T extends Phaser.GameObjects.Components.ScrollFactor & Phaser.GameObjects.Components.Depth>(o: T) => { o.setScrollFactor(0); o.setDepth(100); return o; };
@@ -35,10 +41,16 @@ export class Hud {
     this.arrow = scene.add.container(600, 180).setScrollFactor(0).setDepth(100);
     this.arrow.add([scene.add.image(0, 0, 'ui_arrow').setScale(2), text(scene, -14, 0, G.t('hud.go'), { origin: [1, 0.5], color: COLORS.gold })]);
     this.arrow.setVisible(false);
+    this.nameText = fix(text(scene, 8, 41, '', { color: COLORS.dim }));
+    this.superBox = scene.add.container(0, 0).setScrollFactor(0).setDepth(100).setVisible(false);
+    this.superIcon = scene.add.image(438, 50, 'icon_rucka');
+    this.superName = text(scene, 450, 45, '', { color: COLORS.gold });
+    this.superKey = text(scene, 630, 45, '', { origin: [1, 0], color: COLORS.dim });
+    this.superBox.add([panel(scene, 426, 41, 210, 18, COLORS.panel, 0.75), this.superIcon, this.superName, this.superKey]);
     scene.tweens.add({ targets: this.arrow, x: 610, duration: 400, yoyo: true, repeat: -1 });
   }
 
-  update(s: { hp: number; maxHp: number; xpFrac: number; level: number; dashFrac: number; bossFrac: number; phase: number }): void {
+  update(s: { hp: number; maxHp: number; xpFrac: number; level: number; dashFrac: number; bossFrac: number; phase: number; superFrac?: number }): void {
     const g = this.g;
     g.clear();
     // HP
@@ -53,6 +65,16 @@ export class Hud {
     // Dash cooldown pip under weapon
     g.fillStyle(0x1a1420).fillRect(434, 32, 20, 4);
     g.fillStyle(s.dashFrac >= 1 ? 0x5ad05a : 0x6a6a78).fillRect(435, 33, Math.round(18 * s.dashFrac), 2);
+    // Super meter
+    if (this.hasSuper) {
+      const f = Phaser.Math.Clamp(s.superFrac ?? 0, 0, 1);
+      const full = f >= 1;
+      const blink = full && Math.floor(this.scene.time.now / 200) % 2 === 0;
+      g.fillStyle(0x1a1420).fillRect(540, 47, 66, 6);
+      g.fillStyle(0x3a3448).fillRect(541, 48, 64, 4);
+      g.fillStyle(full ? (blink ? 0xfff0a0 : 0xf2d64b) : 0xe0802a).fillRect(541, 48, Math.round(64 * f), 4);
+      this.superKey.setTint(full ? COLORS.gold : COLORS.dim);
+    }
     setText(this.hpText, `${Math.ceil(s.hp)}/${s.maxHp}`);
     setText(this.lvText, G.t('hud.level', { lv: s.level }));
     // Boss bar
@@ -63,6 +85,16 @@ export class Hud {
       g.fillStyle(0xffffff, 0.3).fillRect(170, 336, Math.round(300 * Phaser.Math.Clamp(s.bossFrac, 0, 1)), 2);
       g.fillStyle(0xffffff, 0.6).fillRect(170 + 150, 334, 1, 12);
     }
+  }
+
+  setName(name: string): void { setText(this.nameText, name); }
+
+  setSuper(weaponId: string, name: string): void {
+    this.hasSuper = true;
+    this.superBox.setVisible(true);
+    this.superIcon.setTexture(`icon_${weaponId}`);
+    setText(this.superName, name);
+    setText(this.superKey, keyLabel(G.save.settings.keybinds.super, G.t));
   }
 
   setWave(label: string, enemies: string): void { setText(this.waveText, label); setText(this.enemiesText, enemies); }

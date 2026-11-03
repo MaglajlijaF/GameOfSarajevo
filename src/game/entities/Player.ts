@@ -22,6 +22,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   attackAnimT = 0;
   dead = false;
   aim = 0;
+  /** Keyboard-only mode: attacks go where the character faces (up/down tilt the aim). */
+  keyboardAim = false;
+  /** Umbrella super: no damage and no flicker while > 0. */
+  shieldT = 0;
+  facing = 1;
   weapon: Phaser.GameObjects.Image;
   private sheet: string;
   private dashDir = 1;
@@ -58,12 +63,24 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   tick(dt: number, w: World): void {
     const b = this.body2;
     const c = w.controls;
-    const ptr = this.scene.input.activePointer;
-    const wp = this.scene.cameras.main.getWorldPoint(ptr.x, ptr.y);
-    this.aim = Phaser.Math.Angle.Between(this.x, this.y - 2, wp.x, wp.y);
-    const faceLeft = wp.x < this.x;
+    let faceLeft: boolean;
+    if (this.keyboardAim) {
+      const mv = (c.isDown('right') ? 1 : 0) - (c.isDown('left') ? 1 : 0);
+      if (mv !== 0 && !this.dead) this.facing = mv;
+      faceLeft = this.facing < 0;
+      const tilt = c.isDown('up') && !this.climbing ? -1 : c.isDown('down') && !this.onGround && !this.climbing ? 1 : 0;
+      const base = faceLeft ? Math.PI : 0;
+      this.aim = tilt === 0 ? base : base + tilt * (faceLeft ? -1 : 1) * (Math.PI / 4);
+    } else {
+      const ptr = this.scene.input.activePointer;
+      const wp = this.scene.cameras.main.getWorldPoint(ptr.x, ptr.y);
+      this.aim = Phaser.Math.Angle.Between(this.x, this.y - 2, wp.x, wp.y);
+      faceLeft = wp.x < this.x;
+      this.facing = faceLeft ? -1 : 1;
+    }
 
     this.invuln = Math.max(0, this.invuln - dt);
+    this.shieldT = Math.max(0, this.shieldT - dt);
     this.dashCd = Math.max(0, this.dashCd - dt);
     this.dropT = Math.max(0, this.dropT - dt);
     this.hurtT = Math.max(0, this.hurtT - dt);
@@ -147,9 +164,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       if (c.justUp('jump') && b.velocity.y < 0) b.setVelocityY(b.velocity.y * T.jumpCutFactor);
     }
 
-    // Stage hazards (feet)
-    const feet = w.cellAt(this.x, b.bottom - 2);
-    if (feet === CELL.HAZARD) this.hurt(16, this.x + (this.flipX ? 10 : -10), true);
 
     // Animation
     const anim = this.hurtT > 0 ? 'hurt' : this.attackAnimT > 0 ? 'attack' : !grounded ? (b.velocity.y < 0 ? 'jump' : 'fall') : Math.abs(b.velocity.x) > 12 ? 'run' : 'idle';
@@ -184,7 +198,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
   /** Returns true if damage was taken. */
   hurt(amount: number, fromX: number, hazard = false): boolean {
-    if (this.dead || this.invuln > 0 || this.dashing > 0) return false;
+    if (this.dead || this.invuln > 0 || this.dashing > 0 || this.shieldT > 0) return false;
     this.hp = Math.max(0, Math.round(this.hp - amount));
     this.invuln = T.invulnTime;
     this.hurtT = 0.25;

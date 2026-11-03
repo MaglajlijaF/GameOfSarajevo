@@ -17,7 +17,8 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 page.on('pageerror', (e) => errors.push('pageerror: ' + e.message + '\n' + (e.stack ?? '').split('\n').slice(0, 4).join('\n')));
 page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
 await page.goto('http://localhost:4176/');
-await page.evaluate(() => localStorage.clear());
+// Existing-player save: skip the first-launch intro and tutorial.
+await page.evaluate(() => { localStorage.clear(); localStorage.setItem('gameofsarajevo.save', JSON.stringify({ seenIntro: true, tutorialDone: true })); });
 await page.reload();
 await page.waitForFunction(() => window.__game?.scene.isActive('Menu'), null, { timeout: 15000 });
 const wait = (ms) => page.waitForTimeout(ms);
@@ -26,6 +27,7 @@ const ORDER = ['kovaci', 'bistrik', 'skenderija', 'marijin_dvor', 'grbavica', 'm
 
 const levelUp = () => page.evaluate(() => {
   const g = window.__game;
+  if (g.scene.isActive('Super')) { const sc = g.scene.getScene('Super'); sc.pick = sc.sys.settings.data.offers[0]; sc.refresh(sc.sys.settings.data); sc.confirm.press(); return true; }
   if (!g.scene.isActive('LevelUp')) return false;
   const ls = g.scene.getScene('LevelUp');
   const d = ls.sys.settings.data;

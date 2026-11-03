@@ -43,11 +43,13 @@ export const G = {
 };
 
 /** Run configuration passed from the menu into a stage. */
-export interface RunConfig { stageId: string }
+export interface RunConfig { stageId: string; tutorial?: boolean }
 
 export interface RunSummary {
   stageId: string;
   outcome: 'victory' | 'defeat' | 'quit';
   kills: number;
   level: number;
+  /** True when this victory completed the campaign for the first time. */
+  ending?: boolean;
 }

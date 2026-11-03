@@ -16,7 +16,8 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 page.on('pageerror', (e) => errors.push('pageerror: ' + e.message + '\n' + (e.stack ?? '').split('\n').slice(0, 5).join('\n')));
 page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
 await page.goto('http://localhost:4175/');
-await page.evaluate(() => localStorage.clear());
+// Existing-player save: skip the first-launch intro and tutorial.
+await page.evaluate(() => { localStorage.clear(); localStorage.setItem('gameofsarajevo.save', JSON.stringify({ seenIntro: true, tutorialDone: true })); });
 await page.reload();
 await page.waitForFunction(() => window.__game?.scene.isActive('Menu'), null, { timeout: 15000 });
 const shot = (n) => page.screenshot({ path: `${out}/${n}.png` });
@@ -36,6 +37,13 @@ const levelUps = [];
 async function handleLevelUp() {
   const r = await page.evaluate(() => {
     const g = window.__game;
+    if (g.scene.isActive('Super')) {
+      // Once per stage, at level 3: take the first super offered.
+      const sc = g.scene.getScene('Super');
+      sc.pick = sc.sys.settings.data.offers[0]; sc.refresh(sc.sys.settings.data);
+      sc.confirm.press();
+      return { super: sc.pick };
+    }
     if (!g.scene.isActive('LevelUp')) return null;
     const ls = g.scene.getScene('LevelUp');
     const offers = ls.wCards.length;
@@ -55,7 +63,10 @@ for (let s = 0; s < 6; s++) {
   await page.evaluate((i) => { const st = window.__game.scene.getScene('Stage'); const sec = st.plan.sections[i]; st.player.setPosition((sec.x0 + 6) * 16, 280); st.player.body.reset((sec.x0 + 6) * 16, 280); }, s);
   await wait(900);
   const mode = await page.evaluate(() => window.__game.scene.getScene('Stage').mode);
-  if (mode !== (s < 5 ? 'combat' : 'boss')) await fail(`section ${s}: expected lock, mode=${mode}`);
+  if (mode !== (s < 5 ? 'combat' : 'boss')) {
+    console.log(await page.evaluate(() => { const g = window.__game; const st = g.scene.getScene('Stage'); return { active: g.scene.getScenes(true).map((x) => x.scene.key), sec: st.sectionIdx, rem: st.director?.remainingToSpawn, alive: st.aliveCount(), xp: st.xp, superId: st.superId, enemies: st.enemies.getChildren().filter((e) => e.alive).map((e) => ({ x: Math.round(e.x), y: Math.round(e.y), ai: e.ai, v: e.vulnerable, d: e.dying, st: e.stunT })) }; }));
+    await fail(`section ${s}: expected lock, mode=${mode}`);
+  }
   if (s === 2) await shot('4-wave3');
   for (let k = 0; k < 400; k++) {
     if (await handleLevelUp()) { await wait(150); if (levelUps.length === 2) await shot('5-after-merge'); continue; }

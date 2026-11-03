@@ -20,6 +20,9 @@ export interface ProjConfig {
   knockback?: number;
   scale?: number;
   source?: number;    // behavior id for hit cooldown bookkeeping
+  stun?: number;      // seconds of stun on hit (Tepsija)
+  /** Hitbox is the sprite size minus this many pixels (default 2). */
+  hitPad?: number;
 }
 
 /** Pooled projectile used by both the player and enemies. */
@@ -38,6 +41,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
   startX = 0; startY = 0;
   hit = new Set<Enemy>();
   source = 0;
+  stun = 0;
 
   fire(c: ProjConfig): void {
     this.enableBody(true, c.x, c.y, true, true);
@@ -49,7 +53,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
     body.setGravityY(c.gravity ? c.gravity - 900 : 0); // world gravity is 900
     body.setVelocity(c.vx, c.vy);
     body.setBounce(c.motion === 'bouncer' ? 0.7 : c.motion === 'roll' ? 0.35 : 0);
-    body.setSize(Math.max(4, this.width - 2), Math.max(4, this.height - 2));
+    body.setSize(Math.max(4, this.width - (c.hitPad ?? 2)), Math.max(4, this.height - (c.hitPad ?? 2)));
     this.damage = c.damage;
     this.life = c.life;
     this.motion = c.motion ?? 'straight';
@@ -63,6 +67,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.returning = false;
     this.startX = c.x; this.startY = c.y;
     this.source = c.source ?? 0;
+    this.stun = c.stun ?? 0;
     this.hit.clear();
     this.setRotation(this.spin ? 0 : Math.atan2(c.vy, c.vx));
   }

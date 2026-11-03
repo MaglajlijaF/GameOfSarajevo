@@ -138,3 +138,17 @@ export function projectilePix(id: string): Pix {
   p.stamp(rows);
   return p;
 }
+
+/**
+ * Enemy version of a projectile: the same sprite with a dark outline and a red
+ * danger rim, 4px larger in each direction, so hostile shots read at a glance
+ * and are clearly distinct from the player's own.
+ */
+export function enemyProjectilePix(id: string): Pix {
+  const src = projectilePix(id);
+  const p = new Pix(src.w + 4, src.h + 4);
+  p.blit(src, 2, 2);
+  p.outline('#1a1420');
+  p.outline('#ff5a4a', true);
+  return p;
+}

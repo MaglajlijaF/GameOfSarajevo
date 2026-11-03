@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { normalizeText } from '../../art/font';
 import { audio } from '../../audio/audio';
+import { nav } from './nav';
 
 export const FONT = 'pixel';
 export const COLORS = {
@@ -31,7 +32,7 @@ export function panel(scene: Phaser.Scene, x: number, y: number, w: number, h: n
   return g;
 }
 
-export interface ButtonOpts { w?: number; h?: number; scale?: number; color?: number; fill?: number; disabled?: boolean; sound?: boolean }
+export interface ButtonOpts { w?: number; h?: number; scale?: number; color?: number; fill?: number; disabled?: boolean; sound?: boolean; /** Pressed by Enter when nothing has keyboard focus yet. */ primary?: boolean; nav?: boolean }
 
 export class Button extends Phaser.GameObjects.Container {
   private bg: Phaser.GameObjects.Graphics;
@@ -56,13 +57,18 @@ export class Button extends Phaser.GameObjects.Container {
     this.on('pointerout', () => { this.hovered = false; this.redraw(); });
     this.on('pointerdown', (_p: Phaser.Input.Pointer, _x: number, _y: number, ev: Phaser.Types.Input.EventData) => {
       ev?.stopPropagation?.();
-      audio.unlock();
-      if (this.disabled) { audio.play('deny'); return; }
-      if (o.sound !== false) audio.play('click');
-      this.onClick();
+      this.press(o.sound !== false);
     });
     this.redraw();
     scene.add.existing(this);
+    if (o.nav !== false) nav(scene).add(this, () => this.press(o.sound !== false), !!o.primary);
+  }
+
+  press(sound = true): void {
+    audio.unlock();
+    if (this.disabled) { audio.play('deny'); return; }
+    if (sound) audio.play('click');
+    this.onClick();
   }
 
   setDisabled(d: boolean): this { this.disabled = d; this.redraw(); return this; }

@@ -5,6 +5,7 @@ import { computeUnlocked } from '../../core/progression';
 import { stageReward } from '../../core/economy';
 import { audio, MENU_MUSIC } from '../../audio/audio';
 import { platform } from '../../platform/storage';
+import { nav } from '../ui/nav';
 
 /** Main menu: Sarajevo map with stage nodes, plus navigation to shop/character/settings. */
 export class MenuScene extends Phaser.Scene {
@@ -59,7 +60,9 @@ export class MenuScene extends Phaser.Scene {
       node.add(label);
       if (isUnlocked && !cleared) this.tweens.add({ targets: ring, scale: 1.15, duration: 600, yoyo: true, repeat: -1 });
       node.setSize(24, 24).setInteractive({ useHandCursor: true });
-      node.on('pointerdown', () => { audio.unlock(); audio.play(isUnlocked ? 'click' : 'deny'); this.select(id); });
+      const pick = () => { audio.unlock(); audio.play(isUnlocked ? 'click' : 'deny'); this.select(id); };
+      node.on('pointerdown', pick);
+      nav(this).add(node, pick);
       node.on('pointerover', () => label.setTint(COLORS.gold));
       node.on('pointerout', () => label.setTint(isUnlocked ? COLORS.text : COLORS.dim));
     });
@@ -68,10 +71,13 @@ export class MenuScene extends Phaser.Scene {
     const items: [string, () => void][] = [
       ['menu.shop', () => this.scene.start('Shop')],
       ['menu.character', () => this.scene.start('Character')],
-      ['menu.settings', () => this.scene.start('Settings')],
+      ['menu.tutorial', () => { audio.stopMusic(); this.scene.start('Stage', { stageId: data.stageOrder[0], tutorial: true }); }],
+      ['menu.story', () => this.scene.start('Cutscene', { kind: 'intro' })],
     ];
+    if (save.seenEnding) items.push(['menu.ending', () => this.scene.start('Cutscene', { kind: 'ending' })]);
+    items.push(['menu.settings', () => this.scene.start('Settings')]);
     if (platform.isElectron) items.push(['menu.quit', () => platform.quit()]);
-    items.forEach(([k, fn], i) => new Button(this, bx, 270 + i * 24, G.t(k), fn, { w: 104 }));
+    items.forEach(([k, fn], i) => new Button(this, bx, 342 - (items.length - 1 - i) * 21, G.t(k), fn, { w: 104, h: 18 }));
 
     this.info = this.add.container(0, 0);
     const firstOpen = data.stageOrder.find((id) => unlocked.includes(id) && !save.cleared.includes(id)) ?? data.stageOrder[0];
@@ -104,7 +110,7 @@ export class MenuScene extends Phaser.Scene {
       const stars = Math.min(10, Math.round(st.difficulty * 2));
       this.info.add(text(this, x + 8, y + 54, G.t('menu.difficulty', { d: '' }), { color: COLORS.dim }));
       for (let i = 0; i < 10; i++) this.info.add(this.add.rectangle(x + 76 + i * 8, y + 58, 6, 6, i < stars ? 0xe8483a : 0x3a3448).setStrokeStyle(1, 0x1a1420));
-      const play = new Button(this, x + w - 52, y + h - 16, G.t('menu.play'), () => this.startStage(id), { w: 88, h: 20, fill: 0x3a7a3a });
+      const play = new Button(this, x + w - 52, y + h - 16, G.t('menu.play'), () => this.startStage(id), { w: 88, h: 20, fill: 0x3a7a3a, primary: true });
       this.info.add(play);
     }
     setText(statusT, status.toUpperCase());

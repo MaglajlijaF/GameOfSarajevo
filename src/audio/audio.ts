@@ -6,7 +6,7 @@ import type { MusicDef } from '../core/types';
  * voices for SFX and a small step sequencer for per-stage music.
  */
 export type Sfx = 'jump' | 'dash' | 'swing' | 'shoot' | 'hit' | 'hurt' | 'kill' | 'levelup' | 'coin' | 'click'
-  | 'boss' | 'slam' | 'wave' | 'victory' | 'defeat' | 'pulse' | 'gate' | 'pickup' | 'deny';
+  | 'boss' | 'slam' | 'wave' | 'victory' | 'defeat' | 'pulse' | 'gate' | 'pickup' | 'deny' | 'hiss' | 'steam' | 'super' | 'type' | 'firework';
 
 /** Songs imported from MIDI with scripts/import-midi.mjs. */
 const TRACKS: Record<string, Song> = Object.fromEntries(
@@ -111,6 +111,11 @@ class AudioEngine {
       case 'pulse': this.tone('triangle', 1200, 300, 0.35, 0.3, d); break;
       case 'pickup': this.tone('triangle', 660, 990, 0.1, 0.2, d); break;
       case 'victory': [0, 4, 7, 12, 7, 12].forEach((s, i) => this.tone('square', midiHz(67 + s), midiHz(67 + s), 0.18, 0.22, d, now + i * 0.13)); break;
+      case 'hiss': this.noise(0.25, 0.08, d, 7000); break;
+      case 'steam': this.noise(0.9, 0.3, d, 4500); this.noise(0.4, 0.2, d, 1200); break;
+      case 'super': [0, 7, 12, 19].forEach((s, i) => this.tone('sawtooth', midiHz(55 + s), midiHz(67 + s), 0.18, 0.22, d, now + i * 0.05)); this.noise(0.5, 0.25, d, 2000); break;
+      case 'type': this.tone('square', 1100, 1100, 0.02, 0.06, d); break;
+      case 'firework': this.noise(0.5, 0.3, d, 3000); this.tone('triangle', 1600, 300, 0.4, 0.15, d); break;
       case 'defeat': [7, 3, 0, -5].forEach((s, i) => this.tone('triangle', midiHz(60 + s), midiHz(60 + s), 0.3, 0.3, d, now + i * 0.22)); break;
     }
   }

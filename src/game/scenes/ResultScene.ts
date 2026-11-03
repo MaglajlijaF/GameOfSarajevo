@@ -19,7 +19,8 @@ export class ResultScene extends Phaser.Scene {
     line(G.t('result.level', { lv: d.summary.level }));
     if (d.unlocked) line(G.t('result.unlocked', { stage: G.data.stages[d.unlocked].name }), COLORS.green);
     if (d.reward > 0) this.time.delayedCall(300, () => audio.play('coin'));
-    new Button(this, 320, 264, G.t('result.continue'), () => this.scene.start('Menu'), { w: 160, h: 22 });
+    if (d.summary.ending) line(G.t('result.campaignDone'), COLORS.gold);
+    new Button(this, 320, 264, G.t('result.continue'), () => this.scene.start(d.summary.ending ? 'Cutscene' : 'Menu', { kind: 'ending' }), { w: 160, h: 22, primary: true });
     this.cameras.main.fadeIn(250);
   }
 }

@@ -5,6 +5,7 @@ import { mergeWeapon, weaponName, type CompositeWeapon } from '../../core/weapon
 import { weaponTexture } from '../combat/WeaponSystem';
 import { audio } from '../../audio/audio';
 import { hexToInt } from '../../art/palette';
+import { nav } from '../ui/nav';
 
 interface LevelUpData {
   level: number;
@@ -46,7 +47,9 @@ export class LevelUpScene extends Phaser.Scene {
       text(this, x + 40, y + 24, part ? G.t('levelup.upgradePart', { tier: part.tier + 1 }) : G.t('levelup.newPart'), { color: part ? COLORS.blue : COLORS.green, maxWidth: cw - 46 });
       text(this, x + 8, y + 46, G.t(`weapon.${id}.desc`), { maxWidth: cw - 16 });
       const zone = this.add.zone(x, y, cw, ch).setOrigin(0).setInteractive({ useHandCursor: true });
-      zone.on('pointerdown', () => { audio.play('click'); this.pickW = id; this.refresh(d); });
+      const chooseW = () => { audio.play('click'); this.pickW = id; this.refresh(d); };
+      zone.on('pointerdown', chooseW);
+      nav(this).add(zone, chooseW, i === 0);
     });
 
     const by = 172;
@@ -60,7 +63,9 @@ export class LevelUpScene extends Phaser.Scene {
       text(this, x + 28, by + 9, G.t(`buff.${id}`), { color: col });
       text(this, x + 28, by + 23, G.t(`buff.${id}.desc`), { maxWidth: cw - 34, color: COLORS.dim });
       const zone = this.add.zone(x, by, cw, 46).setOrigin(0).setInteractive({ useHandCursor: true });
-      zone.on('pointerdown', () => { audio.play('click'); this.pickB = id; this.refresh(d); });
+      const chooseB = () => { audio.play('click'); this.pickB = id; this.refresh(d); };
+      zone.on('pointerdown', chooseB);
+      nav(this).add(zone, chooseB);
     });
 
     panel(this, 120, 232, 400, 60);

@@ -67,6 +67,7 @@ export class Boss extends Enemy {
     else if (this.burnT > 0) this.setTint(0xffc090);
     else this.clearTint();
     this.shieldFx?.setPosition(this.x, this.y);
+    if (this.bstate !== 'intro' && this.tickStun(dt)) { this.setTint(0xc8c8ff); return; }
 
     // Phase transitions
     const frac = this.hp / this.maxHp;
@@ -347,6 +348,13 @@ export class Boss extends Enemy {
     this.bstate = 'walk';
     this.bt = pause;
     this.body2.setVelocityX(0);
+  }
+
+  /** A stunned boss drops whatever attack it was doing. */
+  override stun(sec: number): boolean {
+    if (!super.stun(sec)) return false;
+    if (this.bstate === 'act' || this.bstate === 'tele') { this.endAttack(null as unknown as World); this.bstate = 'walk'; this.bt = this.phaseDef.pause; this.anims.resume(); }
+    return true;
   }
 
   override hurt(amount: number, _kx: number, _ky: number): boolean {

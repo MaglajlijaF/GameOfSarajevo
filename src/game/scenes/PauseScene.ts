@@ -11,7 +11,7 @@ export class PauseScene extends Phaser.Scene {
     panel(this, 200, 110, 240, 140);
     text(this, 320, 122, G.t('pause.title'), { scale: 2, origin: [0.5, 0], color: COLORS.gold });
     const resume = () => { this.scene.stop(); this.scene.resume('Stage'); };
-    new Button(this, 320, 168, G.t('pause.resume'), resume, { w: 160 });
+    new Button(this, 320, 168, G.t('pause.resume'), resume, { w: 160, primary: true });
     new Button(this, 320, 196, G.t('pause.quit'), () => {
       this.scene.stop();
       const st = this.scene.get('Stage') as StageScene;

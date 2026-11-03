@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { G } from '../services';
 import { Button, COLORS, keyLabel, panel, text } from '../ui/ui';
-import { ACTIONS, DEFAULT_KEYBINDS, rebind, type Action } from '../../core/input';
+import { ACTIONS, DEFAULT_KEYBINDS, bindsForAimMode, rebind, type Action } from '../../core/input';
+import { nav } from '../ui/nav';
 import { platform } from '../../platform/storage';
 import { audio } from '../../audio/audio';
 import type { Settings } from '../../core/save';
@@ -44,18 +45,25 @@ export class SettingsScene extends Phaser.Scene {
       void platform.setFullscreen(on);
       set({ fullscreen: on });
     }, { w: 100, h: 16 });
-    y += 40;
+    y += 26;
+    row(G.t('settings.aim'));
+    new Button(this, 250, y, G.t(`settings.aim.${s.aimMode}`), () => {
+      const mode = s.aimMode === 'mouse' ? 'keyboard' : 'mouse';
+      set({ aimMode: mode, keybinds: bindsForAimMode(s.keybinds, mode) });
+    }, { w: 100, h: 16 });
+    text(this, 24, y + 10, G.t(`settings.aim.${s.aimMode}.desc`), { color: COLORS.dim, maxWidth: 280 });
+    y += 46;
     new Button(this, 162, y, G.t('settings.resetSave'), () => this.confirmReset(), { w: 200, h: 20, fill: 0x7a2a2a });
 
     // Controls
     panel(this, 324, 40, 304, 270);
     text(this, 334, 48, G.t('settings.controls'), { color: COLORS.dim });
     ACTIONS.forEach((a, i) => {
-      const yy = 72 + i * 24;
+      const yy = 70 + i * 23;
       text(this, 336, yy - 4, G.t(`action.${a}`));
       new Button(this, 560, yy, keyLabel(s.keybinds[a], G.t), () => this.beginRebind(a), { w: 110, h: 18 });
     });
-    new Button(this, 476, 290, G.t('settings.resetKeys'), () => set({ keybinds: { ...DEFAULT_KEYBINDS } }), { w: 160, h: 18 });
+    new Button(this, 476, 292, G.t('settings.resetKeys'), () => set({ keybinds: bindsForAimMode({ ...DEFAULT_KEYBINDS }, s.aimMode) }), { w: 160, h: 18 });
 
     new Button(this, 70, 336, G.t('menu.back'), () => this.scene.start('Menu'), { w: 100 });
     this.input.keyboard?.on('keydown-ESC', () => { if (!this.waiting) this.scene.start('Menu'); });
@@ -63,13 +71,14 @@ export class SettingsScene extends Phaser.Scene {
 
   private beginRebind(action: Action) {
     this.waiting = action;
+    nav(this).enabled = false;
     const shade = this.add.rectangle(0, 0, 640, 360, 0x0b0b14, 0.85).setOrigin(0).setInteractive().setDepth(50);
     const msg = text(this, 320, 170, G.t('settings.pressKey'), { origin: [0.5, 0.5], scale: 1, color: COLORS.gold }).setDepth(51);
     const label = text(this, 320, 150, G.t(`action.${action}`), { origin: [0.5, 0.5], scale: 2 }).setDepth(51);
     const finish = (key: string | null) => {
       this.input.keyboard?.off('keydown', onKey);
       shade.destroy(); msg.destroy(); label.destroy();
-      this.time.delayedCall(50, () => { this.waiting = null; });
+      this.time.delayedCall(50, () => { this.waiting = null; nav(this).enabled = true; });
       if (key) {
         G.update({ ...G.save, settings: { ...G.save.settings, keybinds: rebind(G.save.settings.keybinds, action, key) } });
         audio.play('click');
@@ -88,11 +97,12 @@ export class SettingsScene extends Phaser.Scene {
   }
 
   private confirmReset() {
+    const pop = nav(this).pushLayer();
     const layer = this.add.container(0, 0).setDepth(60);
     layer.add(this.add.rectangle(0, 0, 640, 360, 0x0b0b14, 0.85).setOrigin(0).setInteractive());
     layer.add(panel(this, 180, 130, 280, 100));
     layer.add(text(this, 320, 148, G.t('settings.confirmReset'), { origin: [0.5, 0], color: COLORS.red, maxWidth: 260 }));
     layer.add(new Button(this, 270, 200, G.t('settings.yes'), async () => { await G.reset(); this.scene.start('Menu'); }, { w: 80, fill: 0x7a2a2a }));
-    layer.add(new Button(this, 370, 200, G.t('settings.no'), () => layer.destroy(), { w: 80 }));
+    layer.add(new Button(this, 370, 200, G.t('settings.no'), () => { layer.destroy(); pop(); }, { w: 80, primary: true }));
   }
 }

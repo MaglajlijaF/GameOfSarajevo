@@ -56,7 +56,9 @@ export interface StagesFile {
 
 export type EnemyBehavior =
   | 'walker' | 'charger' | 'thrower' | 'jumper' | 'shooter' | 'bomber' | 'dasher'
-  | 'shielder' | 'summoner' | 'sniper' | 'roller' | 'buffer' | 'dropper' | 'spinner';
+  | 'shielder' | 'summoner' | 'sniper' | 'roller' | 'buffer' | 'dropper' | 'spinner'
+  /** Tutorial training dummy: stands still. */
+  | 'dummy';
 
 export interface EnemyDef {
   id: string;

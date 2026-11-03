@@ -21,12 +21,22 @@ import { audio } from '../../audio/audio';
 import tuning from '../../data/tuning.json';
 import type { World } from '../world';
 import { stageScale } from '../../core/difficulty';
+import { SteamVents } from '../level/SteamVents';
+import { Supers, type SuperHost } from '../combat/Supers';
+import { addCharge, canUseSuper, offerSupers, superDue, SUPER_BOSS_STEP, SUPER_CHARGE, type SuperMeter } from '../../core/supers';
+import { playerName, playerSprite } from '../sprites';
+import { tutorialPlan } from '../../core/tutorial';
+import { Tutorial, type TutorialHost } from '../Tutorial';
+import type { EnemyDef } from '../../core/types';
+
+/** Enemy shots fly at this fraction of their authored speed (same paths, more time to react). */
+const HOSTILE_SPEED = 0.72;
 
 const TS = 16;
 
 type Mode = 'explore' | 'combat' | 'boss' | 'victory' | 'defeat';
 
-export class StageScene extends Phaser.Scene implements World, CombatHost {
+export class StageScene extends Phaser.Scene implements World, CombatHost, SuperHost, TutorialHost {
   stage!: StageDef;
   plan!: LevelPlan;
   controls!: Controls;
@@ -49,8 +59,6 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
   private director: WaveDirector | null = null;
   private kills = 0;
   private rng!: Rng;
-  private hazardTiles: Phaser.Tilemaps.Tile[] = [];
-  private hazardT = 0;
   private targetsCache: Enemy[] = [];
   private numbers: Phaser.GameObjects.BitmapText[] = [];
   private sparks!: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -61,11 +69,26 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
   private homingT = 0;
   /** Stage difficulty applied to every enemy and the boss. */
   diff = { hp: 1, dmg: 1, aggro: 1 };
+  private vents!: SteamVents;
+  private supers!: Supers;
+  /** The stage's one super ability (weapon id), picked at the SUPER_LEVEL level-up. */
+  private superId: string | null = null;
+  private meter: SuperMeter = { charge: 0 };
+  private bossDmgAcc = 0;
+  private tutorial: Tutorial | null = null;
+  private isTutorial = false;
+  private tutorialGates = new Map<number, { zone: Phaser.GameObjects.Zone; vis: Phaser.GameObjects.TileSprite }>();
 
   constructor() { super('Stage'); }
 
-  init(data: { stageId: string }): void {
-    this.stage = G.data.stages[data.stageId];
+  init(data: { stageId: string; tutorial?: boolean }): void {
+    this.isTutorial = !!data.tutorial;
+    this.stage = G.data.stages[data.tutorial ? G.data.stageOrder[0] : data.stageId];
+    this.superId = null;
+    this.meter = { charge: 0 };
+    this.bossDmgAcc = 0;
+    this.tutorial = null;
+    this.tutorialGates = new Map();
     this.mode = 'explore';
     this.sectionIdx = 0;
     this.director = null;
@@ -76,7 +99,6 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     this.ended = false;
     this.gateVis = [];
     this.bg = [];
-    this.hazardTiles = [];
     this.numbers = [];
     this.currentSection = null;
     this.rng = new Rng(hashString(data.stageId) ^ Date.now());
@@ -84,7 +106,7 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
 
   create(): void {
     const st = this.stage;
-    this.plan = buildLevel(st, G.data.layouts);
+    this.plan = this.isTutorial ? tutorialPlan() : buildLevel(st, G.data.layouts);
     this.diff = stageScale(st);
     const W = this.plan.width * TS, H = LEVEL_H * TS;
     this.physics.world.gravity.y = tuning.gravity;
@@ -106,9 +128,9 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     this.controls = new Controls(this, G.save.settings.keybinds);
 
     // Player
-    const ch = G.data.characters.find((c) => c.id === G.save.selectedCharacter) ?? G.data.characters[0];
     this.baseStats = statsFromUpgrades(G.save.upgrades, G.data.shop.upgrades);
-    this.player = new Player(this, this.plan.playerSpawn.x * TS + 8, this.plan.playerSpawn.y * TS, ch.sprite, this.baseStats);
+    this.player = new Player(this, this.plan.playerSpawn.x * TS + 8, this.plan.playerSpawn.y * TS, playerSprite(this), this.baseStats);
+    this.player.keyboardAim = G.save.settings.aimMode === 'keyboard';
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12, 0, 20);
 
     // Pools
@@ -123,6 +145,9 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     this.weapons.setWeapon(this.weapon);
 
     this.setupColliders();
+    const hazardDmg = Math.round((G.data.themes[st.theme].hazardDamage ?? 16) * (this.isTutorial ? 0.5 : this.diff.dmg));
+    this.vents = new SteamVents(this, this.layer, this.plan.cells, this, hazardDmg);
+    this.supers = new Supers(this);
 
     // FX
     this.sparks = this.add.particles(0, 0, 'fx_px', { speed: { min: 40, max: 140 }, lifespan: 300, scale: { start: 1, end: 0 }, gravityY: 300, emitting: false }).setDepth(30);
@@ -130,10 +155,16 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     for (let i = 0; i < 40; i++) this.numbers.push(text(this, 0, 0, '', { origin: [0.5, 1] }).setDepth(60).setVisible(false));
 
     this.hud = new Hud(this);
+    this.hud.setName(playerName());
     this.hud.setWeapon(this.weapons.textureKey, weaponName(this.weapon, G.data.weapons, (k) => G.i18n.maybe(k)));
-    this.updateWaveHud();
-    this.hud.showArrow(true);
-    this.hud.flash(st.name, G.t('hud.wave', { n: 1, total: 5 }), 1600);
+    if (this.isTutorial) {
+      this.hud.setWave(G.t('tutorial.hud'), '');
+      this.tutorial = new Tutorial(this);
+    } else {
+      this.updateWaveHud();
+      this.hud.showArrow(true);
+      this.hud.flash(st.name, G.t('hud.wave', { n: 1, total: 5 }), 1600);
+    }
 
     audio.playMusic(st.music);
 
@@ -143,6 +174,8 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
       this.game.events.off(Phaser.Core.Events.BLUR, this.onBlur, this);
       this.controls.destroy();
       this.weapons.destroy();
+      this.supers.destroy();
+      this.vents.destroy();
     });
     this.events.on(Phaser.Scenes.Events.RESUME, () => { this.controls.flush(); this.inLevelUp = false; });
   }
@@ -166,10 +199,10 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     const tiles = map.addTilesetImage(`tiles_${this.stage.theme}`, `tiles_${this.stage.theme}`, TS, TS, 0, 0)!;
     this.layer = map.createLayer(0, tiles, 0, 0)!;
     this.layer.setDepth(5);
-    this.layer.setCollision([TILE.TOP, TILE.FILL, TILE.FILL2]);
+    // Sewer grates (hazard cells) are solid; they hurt only while bursting steam.
+    this.layer.setCollision([TILE.TOP, TILE.FILL, TILE.FILL2, TILE.HAZARD_A, TILE.HAZARD_B]);
     this.layer.forEachTile((t) => {
       if (t.index === TILE.PLATFORM) t.setCollision(false, false, true, false, false);
-      if (t.index === TILE.HAZARD_A) this.hazardTiles.push(t);
     });
     this.layer.calculateFacesWithin(0, 0, width, LEVEL_H);
   }
@@ -216,7 +249,7 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     });
     this.physics.add.overlap(this.player, this.enemies, (_p, e) => {
       const en = e as unknown as Enemy;
-      if (!en.vulnerable) return;
+      if (!en.vulnerable || en.damage <= 0 || en.stunT > 0) return;
       const f = en.isBoss ? 0.8 : en.charging ? 1.4 : tuning.enemyContactFactor;
       if (this.player.hurt(Math.round(en.damage * f), en.x)) this.shake(0.006, 120);
     });
@@ -227,6 +260,7 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     p.hit.add(e);
     const kb = p.knockback * (p.body2.velocity.x >= 0 ? 1 : -1);
     this.hitEnemy(e, p.damage, e.x - Math.sign(kb || 1) * 10, e.y, Math.abs(kb));
+    if (p.stun > 0 && e.vulnerable && e.stun(p.stun)) this.sparkAt(e.x, e.body2.top - 4, 0xf2d64b, 5);
     p.pierce--;
     if (p.pierce <= 0) p.kill();
   }
@@ -250,6 +284,10 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     const killed = e.hurt(dmg, dir * knockback, -knockback * 0.6, fromX);
     if (e.blocked) { this.number(e.x, e.y - 12, G.t('hud.blocked'), 0x9aa0b4); this.sparkAt(e.x + Math.sign(fromX - e.x) * 6, e.y, 0xc0c4cc, 3); audio.play('deny'); return; }
     this.number(e.x, e.y - 12, String(dmg), chained ? 0xf2d64b : 0xffffff);
+    if (e.isBoss && this.superId) {
+      this.bossDmgAcc += dmg / e.maxHp;
+      while (this.bossDmgAcc >= SUPER_BOSS_STEP) { this.bossDmgAcc -= SUPER_BOSS_STEP; this.meter = addCharge(this.meter, 1); }
+    }
     this.sparkAt(e.x, e.y, 0xffffff, 4);
     audio.play('hit');
     const m = this.weapons.mods;
@@ -274,7 +312,7 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     this.tweens.add({ targets: r, scale: (radius * 2) / 32, alpha: 0, duration: 300, onComplete: () => r.destroy() });
   }
 
-  private zap(x0: number, y0: number, x1: number, y1: number) {
+  zap(x0: number, y0: number, x1: number, y1: number): void {
     const g = this.add.graphics().setDepth(31);
     g.lineStyle(2, 0xfff0a0, 1);
     g.beginPath();
@@ -285,22 +323,100 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     this.tweens.add({ targets: g, alpha: 0, duration: 150, onComplete: () => g.destroy() });
   }
 
+  // ---------- SuperHost ----------
+  onScreen(): Enemy[] {
+    const v = this.cameras.main.worldView;
+    return this.targetsCache.filter((e) => e.x > v.x - 8 && e.x < v.right + 8 && e.y > v.y - 8 && e.y < v.bottom + 8);
+  }
+
+  superPower(): number { return Math.round(26 * this.diff.hp); }
+
+  blast(x: number, y: number, radius: number, damage: number, tint: number): void {
+    this.ring(x, y, radius, tint);
+    this.sparkAt(x, y, tint, 10);
+    for (const e of this.targetsCache) if (Phaser.Math.Distance.Between(x, y, e.x, e.y) <= radius + 6) this.hitEnemy(e, damage, x, y, 80);
+  }
+
+  // ---------- Steam vents ----------
+  steamEnemy(e: Enemy, damage: number): void {
+    if (!e.vulnerable) return;
+    this.number(e.x, e.y - 12, String(damage), 0xd8dce8);
+    this.puff(e.x, e.y, 3, 0xffffff);
+    if (e.hurt(damage, 0, -260)) this.onKill(e);
+  }
+
+  view(): Phaser.Geom.Rectangle { return this.cameras.main.worldView; }
+
+  // ---------- TutorialHost ----------
+  setGate(tileX: number, closed: boolean): void {
+    const ex = this.tutorialGates.get(tileX);
+    if (!closed) {
+      if (!ex) return;
+      this.gates.remove(ex.zone, true, true);
+      this.tweens.add({ targets: ex.vis, alpha: 0, duration: 300, onComplete: () => ex.vis.destroy() });
+      this.tutorialGates.delete(tileX);
+      audio.play('gate');
+      return;
+    }
+    if (ex) return;
+    const gx = tileX * TS + 8;
+    const zone = this.add.zone(gx, (LEVEL_H * TS) / 2, 8, LEVEL_H * TS * 2);
+    this.gates.add(zone);
+    const vis = this.add.tileSprite(gx, 0, 16, 20 * TS, `tiles_${this.stage.theme}`, TILE.GATE).setOrigin(0.5, 0).setDepth(6);
+    this.tutorialGates.set(tileX, { zone, vis });
+  }
+
+  spawnDummy(tileX: number, row: number): Enemy | null {
+    const def: EnemyDef = { id: 'dummy', sprite: 'enemy_dummy', behavior: 'dummy', hp: 40, damage: 0, speed: 0, xp: 0, params: {} };
+    return this.spawnDef(def, tileX * TS + 8, row * TS);
+  }
+
+  end(): void {
+    if (this.ended) return;
+    this.ended = true;
+    G.update({ ...G.save, tutorialDone: true });
+    audio.stopMusic();
+    audio.play('victory');
+    this.cameras.main.fadeOut(400);
+    this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('Menu'));
+  }
+
   // ---------- World ----------
   fireEnemyProjectile(kind: string, x: number, y: number, vx: number, vy: number, gravity: number, damage: number): void {
-    const p = this.eProj.get(x, y) as Projectile | null;
-    if (!p) return;
-    p.fire({ texture: `proj_${kind}`, x, y, vx, vy, damage, life: 4, motion: 'arc', gravity, spin: 8 });
+    this.fireHostile({ texture: `proj_${kind}`, x, y, vx, vy, damage, life: 4, motion: 'arc', gravity, spin: 8 });
+  }
+
+  /**
+   * Every hostile shot passes through here: it is slowed to HOSTILE_SPEED and drawn
+   * with the larger outlined enemy sprite. Gravity is scaled by the square of the
+   * speed factor, so arcs still land exactly where the thrower aimed, just later.
+   */
+  private hostileConfig(cfg: ProjConfig): ProjConfig {
+    const k = HOSTILE_SPEED;
+    const tex = cfg.texture.startsWith('proj_') ? `e${cfg.texture}` : cfg.texture;
+    return {
+      ...cfg,
+      texture: this.textures.exists(tex) ? tex : cfg.texture,
+      vx: cfg.vx * k, vy: cfg.vy * k,
+      gravity: cfg.gravity ? cfg.gravity * k * k : cfg.gravity,
+      turn: cfg.turn ? cfg.turn * k : cfg.turn,
+      life: cfg.motion === 'trap' ? cfg.life : cfg.life / k,
+      hitPad: tex !== cfg.texture ? 4 : cfg.hitPad,
+    };
   }
 
   groundWave(x: number, y: number, dir: number, speed: number, damage: number, hostile: boolean): void {
     const cfg: ProjConfig = { texture: 'proj_wave', x, y, vx: dir * speed, vy: 0, damage, life: 1.8, motion: 'wave', pierce: 99, tint: hostile ? 0xff7a2a : undefined };
-    if (hostile) { const p = this.eProj.get(x, y) as Projectile | null; p?.fire(cfg); }
+    if (hostile) this.fireHostile(cfg);
     else this.firePlayer(cfg);
   }
 
   spawnEnemy(id: string, x: number, y: number): Enemy | null {
     const def = G.data.enemies[id];
-    if (!def) return null;
+    return def ? this.spawnDef(def, x, y) : null;
+  }
+
+  private spawnDef(def: EnemyDef, x: number, y: number): Enemy | null {
     const e = this.enemies.get(x, y) as Enemy | null;
     if (!e) return null;
     e.spawn(def, x, y, this.diff);
@@ -310,7 +426,7 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
 
   fireHostile(cfg: ProjConfig): void {
     const p = this.eProj.get(cfg.x, cfg.y) as Projectile | null;
-    p?.fire(cfg);
+    p?.fire(cfg.motion === 'trap' ? cfg : this.hostileConfig(cfg));
   }
 
   /** Bombs and meteors: area damage where they land (range = blast radius). */
@@ -472,6 +588,8 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     audio.play('kill');
     this.puff(e.x, e.y, 6, 0xffffff);
     this.sparkAt(e.x, e.y - 8, 0xf2d64b, 8);
+    if (this.isTutorial) return;
+    if (this.superId) this.meter = addCharge(this.meter, 1);
     const xp = e.isBoss ? (G.data.bosses[this.stage.boss]?.xp ?? 0) : e.def.xp;
     const r = addXp(this.xp, xp, this.player.stats.xpMult);
     this.xp = r.state;
@@ -492,12 +610,15 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
   }
 
   private finish(outcome: RunSummary['outcome']) {
+    if (this.isTutorial) { this.end(); return; }
     if (this.ended) return;
     this.ended = true;
     audio.stopMusic();
     const res = applyStageResult(G.save, G.ctx, this.stage.id, outcome, this.kills);
-    G.update(res.save);
-    const summary: RunSummary = { stageId: this.stage.id, outcome, kills: this.kills, level: this.xp.level };
+    // Beating the last boss for the first time plays the ending cutscene.
+    const ending = outcome === 'victory' && res.save.cleared.length === G.data.stageOrder.length && !res.save.seenEnding;
+    G.update(ending ? { ...res.save, seenEnding: true } : res.save);
+    const summary: RunSummary = { stageId: this.stage.id, outcome, kills: this.kills, level: this.xp.level, ending };
     if (outcome === 'quit') { this.scene.start('Menu'); return; }
     this.cameras.main.fadeOut(300);
     this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('Result', { summary, reward: res.reward, unlocked: res.unlockedStage }));
@@ -516,6 +637,19 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     const offers = offerWeapons(this.weapon, G.data.weapons, this.rng);
     audio.play('levelup');
     this.scene.pause();
+    const level = this.xp.level - this.xp.pendingLevelUps + 1;
+    if (superDue(level, this.superId)) {
+      this.scene.launch('Super', {
+        offers: offerSupers(Object.keys(G.data.weapons), this.rng),
+        onPick: (id: string) => {
+          this.superId = id;
+          this.meter = { charge: SUPER_CHARGE }; // ready to try straight away
+          this.hud.setSuper(id, G.t(`super.${id}`));
+        },
+        next: { level, weapon: this.weapon, offers, onPick: (weaponId: string | null, buffId: string) => this.applyLevelUp(weaponId, buffId) },
+      });
+      return;
+    }
     this.scene.launch('LevelUp', {
       level: this.xp.level - this.xp.pendingLevelUps + 1,
       weapon: this.weapon,
@@ -560,6 +694,10 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     this.player.tick(dt, this);
     const attacking = this.controls.isDown('attack') && this.mode !== 'victory';
     this.weapons.update(dt, attacking);
+    if (this.controls.justDown('super') && !this.player.dead && this.mode !== 'victory') this.useSuper();
+    this.supers.update(dt);
+    this.vents.update(dt);
+    this.tutorial?.update();
 
     this.enemies.children.each((c) => {
       const e = c as unknown as Enemy;
@@ -583,12 +721,6 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
     this.updateProjectiles(dt);
     this.updateFlow(dt);
 
-    // Hazard tile animation
-    this.hazardT -= dt;
-    if (this.hazardT <= 0) {
-      this.hazardT = 0.2;
-      for (const t of this.hazardTiles) t.index = t.index === TILE.HAZARD_A ? TILE.HAZARD_B : TILE.HAZARD_A;
-    }
 
     // Parallax
     const cam = this.cameras.main;
@@ -614,10 +746,20 @@ export class StageScene extends Phaser.Scene implements World, CombatHost {
       hp: this.player.hp, maxHp: this.player.stats.maxHp, xpFrac: xpProgress(this.xp), level: this.xp.level,
       dashFrac: 1 - this.player.dashCd / tuning.dashCooldown,
       bossFrac: this.boss ? this.boss.hp / this.boss.maxHp : 0, phase: this.boss?.phase ?? 0,
+      superFrac: this.meter.charge / SUPER_CHARGE,
     });
   }
 
+  private useSuper() {
+    if (!this.superId) return;
+    if (!canUseSuper(this.meter)) { audio.play('deny'); return; }
+    this.meter = { charge: 0 };
+    this.hud.flash(G.t(`super.${this.superId}`), '', 700, COLORS.gold);
+    this.supers.fire(this.superId);
+  }
+
   private updateFlow(dt: number) {
+    if (this.isTutorial) return;
     if (this.mode === 'explore') {
       const s = this.plan.sections[this.sectionIdx];
       if (s && this.player.x > (s.x0 + 2) * TS && !this.player.dead) this.startSection(s);

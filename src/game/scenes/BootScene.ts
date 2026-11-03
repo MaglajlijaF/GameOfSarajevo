@@ -2,9 +2,9 @@ import Phaser from 'phaser';
 import { buildManifest } from '../../art/manifest';
 import { framesToCanvas } from '../../art/pixel';
 import { buildFontCanvas, FONT_CELL_H, FONT_CELL_W, FONT_CHARS, FONT_PER_ROW } from '../../art/font';
-import { ANIMS } from '../../art/characters';
 import { G } from '../services';
 import { FONT } from '../ui/ui';
+import { registerCharacterAnims } from '../sprites';
 
 /** Builds every texture from the manifest, registers animations and loads the save. */
 export class BootScene extends Phaser.Scene {
@@ -41,22 +41,13 @@ export class BootScene extends Phaser.Scene {
       ...G.data.characters.map((c) => c.sprite),
       ...Object.values(G.data.enemies).map((e) => e.sprite),
       ...Object.values(G.data.bosses).map((b) => b.sprite),
+      'enemy_dummy',
     ];
-    for (const key of sheetKeys) {
-      if (!this.textures.exists(key)) continue;
-      const mk = (name: string, frames: readonly number[], rate: number, repeat: number) =>
-        this.anims.create({ key: `${key}_${name}`, frames: frames.map((f) => ({ key, frame: f })), frameRate: rate, repeat });
-      mk('idle', ANIMS.idle, 3, -1);
-      mk('run', ANIMS.run, 10, -1);
-      mk('jump', ANIMS.jump, 1, 0);
-      mk('fall', ANIMS.fall, 1, 0);
-      mk('attack', ANIMS.attack, 14, 0);
-      mk('hurt', ANIMS.hurt, 1, 0);
-      mk('defeat', ANIMS.defeat, 4, 0);
-    }
+    for (const key of sheetKeys) if (this.textures.exists(key)) registerCharacterAnims(this, key);
 
     await G.load();
     this.game.canvas.oncontextmenu = (e) => e.preventDefault();
-    this.scene.start('Menu');
+    // First launch: story intro, then the tutorial.
+    this.scene.start(G.save.seenIntro ? 'Menu' : 'Cutscene', { kind: 'intro' });
   }
 }

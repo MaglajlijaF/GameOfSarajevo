@@ -8,6 +8,8 @@ import { ResultScene } from './game/scenes/ResultScene';
 import { ShopScene } from './game/scenes/ShopScene';
 import { SettingsScene } from './game/scenes/SettingsScene';
 import { CharacterScene } from './game/scenes/CharacterScene';
+import { CutsceneScene } from './game/scenes/CutsceneScene';
+import { SuperScene } from './game/scenes/SuperScene';
 
 /**
  * Internal resolution 640x360 (16px tiles), scaled to the window with nearest
@@ -25,7 +27,7 @@ const game = new Phaser.Game({
   physics: { default: 'arcade', arcade: { gravity: { x: 0, y: 900 }, debug: false, tileBias: 20 } },
   fps: { target: 60 },
   input: { mouse: { preventDefaultWheel: true } },
-  scene: [BootScene, MenuScene, StageScene, LevelUpScene, PauseScene, ResultScene, ShopScene, SettingsScene, CharacterScene],
+  scene: [BootScene, MenuScene, StageScene, LevelUpScene, PauseScene, ResultScene, ShopScene, SettingsScene, CharacterScene, CutsceneScene, SuperScene],
 });
 
 (window as unknown as { __game: Phaser.Game }).__game = game;

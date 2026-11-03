@@ -2,6 +2,9 @@ import { DEFAULT_KEYBINDS, sanitizeKeybinds, type Keybinds } from './input';
 import { computeUnlocked, nextStage, validateCleared, type StageOutcome } from './progression';
 import { canAfford, stageReward, starterCost, upgradeCost } from './economy';
 import type { Lang, ShopUpgradeDef, StageDef, WeaponDef } from './types';
+import { CUSTOM_ID, defaultCustom, sanitizeCustom, type CustomCharacter } from './custom';
+
+export type AimMode = 'mouse' | 'keyboard';
 
 export const SAVE_VERSION = 1;
 
@@ -11,6 +14,8 @@ export interface Settings {
   musicVolume: number;
   sfxVolume: number;
   fullscreen: boolean;
+  /** mouse: attack toward the cursor. keyboard: attack where the character faces. */
+  aimMode: AimMode;
   keybinds: Keybinds;
 }
 
@@ -24,6 +29,12 @@ export interface SaveData {
   ownedStarters: string[];
   selectedStarter: string;
   selectedCharacter: string;
+  /** The player-made character ('custom' in selectedCharacter). */
+  custom: CustomCharacter;
+  /** Story flags: intro cutscene + tutorial shown, ending seen. */
+  seenIntro: boolean;
+  tutorialDone: boolean;
+  seenEnding: boolean;
   settings: Settings;
   stats: { runs: number; wins: number; kills: number };
 }
@@ -39,7 +50,7 @@ export interface SaveContext {
 }
 
 export function defaultSettings(): Settings {
-  return { lang: 'bs', masterVolume: 0.8, musicVolume: 0.6, sfxVolume: 0.8, fullscreen: false, keybinds: { ...DEFAULT_KEYBINDS } };
+  return { lang: 'bs', masterVolume: 0.8, musicVolume: 0.6, sfxVolume: 0.8, fullscreen: false, aimMode: 'mouse', keybinds: { ...DEFAULT_KEYBINDS } };
 }
 
 export function createDefaultSave(ctx: SaveContext): SaveData {
@@ -52,6 +63,10 @@ export function createDefaultSave(ctx: SaveContext): SaveData {
     ownedStarters: [ctx.defaultStarter],
     selectedStarter: ctx.defaultStarter,
     selectedCharacter: ctx.characters[0],
+    custom: defaultCustom(),
+    seenIntro: false,
+    tutorialDone: false,
+    seenEnding: false,
     settings: defaultSettings(),
     stats: { runs: 0, wins: 0, kills: 0 },
   };
@@ -79,7 +94,7 @@ export function validateSave(raw: unknown, ctx: SaveContext): SaveData {
   const isStarter = (id: string) => id === ctx.defaultStarter || !!ctx.weapons[id]?.starter;
   const owned = Array.from(new Set([ctx.defaultStarter, ...strArr(r.ownedStarters).filter(isStarter)]));
   const selectedStarter = typeof r.selectedStarter === 'string' && owned.includes(r.selectedStarter) ? r.selectedStarter : ctx.defaultStarter;
-  const selectedCharacter = typeof r.selectedCharacter === 'string' && ctx.characters.includes(r.selectedCharacter)
+  const selectedCharacter = typeof r.selectedCharacter === 'string' && (ctx.characters.includes(r.selectedCharacter) || r.selectedCharacter === CUSTOM_ID)
     ? r.selectedCharacter : ctx.characters[0];
 
   const rs = (r.settings && typeof r.settings === 'object' ? r.settings : {}) as Record<string, unknown>;
@@ -90,6 +105,7 @@ export function validateSave(raw: unknown, ctx: SaveContext): SaveData {
     musicVolume: clamp01(rs.musicVolume, d.musicVolume),
     sfxVolume: clamp01(rs.sfxVolume, d.sfxVolume),
     fullscreen: typeof rs.fullscreen === 'boolean' ? rs.fullscreen : d.fullscreen,
+    aimMode: rs.aimMode === 'keyboard' ? 'keyboard' : 'mouse',
     keybinds: sanitizeKeybinds(rs.keybinds),
   };
 
@@ -104,6 +120,11 @@ export function validateSave(raw: unknown, ctx: SaveContext): SaveData {
     ownedStarters: owned,
     selectedStarter,
     selectedCharacter,
+    custom: sanitizeCustom(r.custom),
+    seenIntro: r.seenIntro === true,
+    tutorialDone: r.tutorialDone === true,
+    // The ending can only have been seen if the whole campaign is cleared.
+    seenEnding: r.seenEnding === true && cleared.length === ctx.stageOrder.length,
     settings,
     stats: { runs: nonNegInt(st.runs), wins: nonNegInt(st.wins), kills: nonNegInt(st.kills) },
   };

@@ -6,10 +6,12 @@
  * keeping the same key and frame layout (see characters.ts ANIMS for frame order).
  */
 import { Pix } from './pixel';
+import { shade } from './palette';
 import { bossFrames, humanoidFrames, FRAME } from './characters';
 import { tilesetFrames, TS } from './tiles';
 import { farLayer, midLayer, skyLayer } from './backgrounds';
-import { WEAPON_ICONS, PROJECTILES, projectilePix } from './weaponsArt';
+import { WEAPON_ICONS, PROJECTILES, projectilePix, enemyProjectilePix } from './weaponsArt';
+import { Rng } from '../core/rng';
 import { cityMap } from './map';
 import { hashString } from '../core/rng';
 import type { CharacterRecipe, GameData } from '../core/types';
@@ -42,12 +44,77 @@ function fx(): Record<string, AssetEntry> {
     ui_coin: one(8, 8, (p) => p.stamp(['..kkkk..', '.kyyyyk.', 'kyylyyyk', 'kyykkyyk', 'kyykkyyk', 'kyyyyyyk', '.kyyyyk.', '..kkkk..'])),
     ui_heart: one(9, 8, (p) => p.stamp(['.kk...kk.', 'krrk.krrk', 'krwrkrrrk', 'krrrrrrrk', '.krrrrrk.', '..krrrk..', '...krk...', '....k....'])),
     ui_arrow: one(12, 12, (p) => p.stamp(['....kk......', '....kyk.....', '....kyyk....', 'kkkkkyyyk...', 'kyyyyyyyyk..', 'kyyyyyyyyyk.', 'kyyyyyyyyk..', 'kkkkkyyyk...', '....kyyk....', '....kyk.....', '....kk......'])),
+    fx_stun: one(15, 6, (p) => { for (const x of [2, 7, 12]) p.stamp(['.y.', 'yly', '.y.'], x - 1, x === 7 ? 0 : 2); }),
+    fx_confetti: one(2, 4, (p) => p.rect(0, 0, 2, 4, '#ffffff')),
+    fx_steam: steam(),
+    fx_tram: one(80, 34, drawTram),
     ui_cursor: one(11, 11, (p) => p.stamp(['.....w.....', '.....w.....', '...........', '....kkk....', 'ww.kw.wk.ww', '....kkk....', '...........', '.....w.....', '.....w.....'], 0, 1)),
   };
 }
 
+/** Three frames of a rising steam column (16x56), drawn as soft cloud blobs. */
+function steam(): AssetEntry {
+  return {
+    kind: 'generated', frameWidth: 16, frameHeight: 56,
+    build: () => [0, 1, 2].map((f) => {
+      const p = new Pix(16, 56);
+      const rng = new Rng(77 + f * 13);
+      for (let y = 54; y >= 2; y -= 3) {
+        const spread = 2 + Math.round(((54 - y) / 52) * 5);
+        const n = 2 + (y > 30 ? 1 : 0);
+        for (let i = 0; i < n; i++) {
+          const x = 8 + rng.int(-spread, spread) * (i % 2 ? 1 : -1) * 0.6;
+          const r = 1 + rng.int(1, 2) + (y < 24 ? 1 : 0);
+          p.circle(x, y + rng.int(-1, 1), r, rng.chance(0.3) ? '#d8dce8' : '#f4f4f4');
+        }
+      }
+      for (let i = 0; i < 6; i++) p.set(rng.int(2, 13), rng.int(4, 50), '#ffffff');
+      return p;
+    }),
+  };
+}
+
+/** A generic city tram, side view, facing right (super attack of the tram handle). */
+function drawTram(p: Pix): void {
+  const body = '#e8c23a', bodyD = '#b08a1e', red = '#c83a2a', cream = '#f0e2c4', glass = '#7ab8e0', glassD = '#3a6a9a';
+  p.line(40, 0, 32, 5, '#4a4e5a'); p.line(40, 0, 48, 5, '#4a4e5a'); p.rect(30, 5, 20, 1, '#4a4e5a'); // pantograph
+  p.rect(4, 6, 72, 3, cream); p.rect(6, 5, 68, 1, cream);
+  p.rect(2, 9, 76, 16, body);
+  p.rect(2, 22, 76, 3, red);
+  p.rect(2, 9, 76, 1, shade(body, 0.3));
+  for (let x = 8; x < 66; x += 12) { p.rect(x, 11, 9, 7, glass); p.rect(x, 11, 9, 1, '#ffffff'); p.rect(x + 8, 12, 1, 6, glassD); }
+  p.rect(70, 11, 6, 8, glass); p.rect(70, 11, 6, 1, '#ffffff'); // driver's window
+  p.rect(32, 19, 6, 6, bodyD); // door
+  p.rect(76, 20, 3, 2, '#fff0a0'); // headlight
+  p.rect(2, 25, 76, 2, '#2a2c34');
+  for (const x of [10, 22, 56, 68]) { p.circle(x, 29, 3, '#2a2c34'); p.circle(x, 29, 1, '#8a8f9c'); }
+  p.outline('#1a1420');
+}
+
+/** Straw training dummy on a post (tutorial). Same 14-frame layout as people. */
+function dummyFrames(): Pix[] {
+  const base = (tilt: number) => {
+    const p = new Pix(FRAME, FRAME);
+    p.rect(11, 17, 2, 6, '#8a5a2e'); p.rect(8, 22, 8, 2, '#5a3418');
+    const sx = 8 + tilt;
+    p.rect(sx, 6, 8, 11, '#d8b888'); p.rect(sx, 6, 8, 1, '#f0e2c4'); p.rect(sx, 10, 8, 1, '#9a8a5a'); p.rect(sx, 14, 8, 1, '#9a8a5a');
+    p.rect(sx - 3, 9, 3, 2, '#d8b888'); p.rect(sx + 8, 9, 3, 2, '#d8b888');
+    p.rect(sx + 1, 1, 6, 5, '#e8c890'); p.set(sx + 2, 3, '#1a1420'); p.set(sx + 5, 3, '#1a1420');
+    p.rect(sx + 2, 5, 4, 1, '#c87a3a');
+    p.circle(sx + 4, 12, 2, '#e8483a'); p.set(sx + 4, 12, '#f4f4f4');
+    p.outline('#1a1420');
+    return p;
+  };
+  const f: Pix[] = [];
+  for (let i = 0; i < 10; i++) f.push(base(0));
+  f.push(base(2));                                 // hurt: leans back
+  f.push(base(3), base(3).shifted(0, 2), base(0).rotatedCW().shifted(0, 6)); // defeat
+  return f;
+}
+
 export function buildManifest(data: GameData): Record<string, AssetEntry> {
   const m: Record<string, AssetEntry> = { ...fx() };
+  m.enemy_dummy = { kind: 'generated', frameWidth: FRAME, frameHeight: FRAME, build: dummyFrames };
   const human = (r: CharacterRecipe): AssetEntry => ({ kind: 'generated', frameWidth: FRAME, frameHeight: FRAME, build: () => humanoidFrames(r) });
   for (const c of data.characters) m[c.sprite] = human(c.recipe);
   const recipes = sprites as Record<string, CharacterRecipe>;
@@ -88,6 +155,7 @@ export function buildManifest(data: GameData): Record<string, AssetEntry> {
   for (const id of Object.keys(PROJECTILES)) {
     const pix = projectilePix(id);
     m[`proj_${id}`] = { kind: 'generated', frameWidth: pix.w, frameHeight: pix.h, build: () => [projectilePix(id)] };
+    m[`eproj_${id}`] = { kind: 'generated', frameWidth: pix.w + 4, frameHeight: pix.h + 4, build: () => [enemyProjectilePix(id)] };
   }
   m.ui_map = { kind: 'generated', frameWidth: 640, frameHeight: 360, build: () => [cityMap()] };
   return m;

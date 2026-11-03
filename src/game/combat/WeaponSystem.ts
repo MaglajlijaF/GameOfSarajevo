@@ -139,7 +139,7 @@ export class WeaponSystem {
       case 'shockwave': {
         const fy = p.body2.bottom - 4;
         for (const dir of [-1, 1]) {
-          h.firePlayer({ texture: 'proj_wave', x: p.x + dir * 6, y: fy, vx: dir * prm.speed, vy: 0, damage: b.damage, life: prm.life, motion: 'wave', pierce: 99, knockback: 40, source: idx });
+          h.firePlayer({ texture: 'proj_wave', x: p.x + dir * 6, y: fy, vx: dir * prm.speed, vy: 0, damage: b.damage, life: prm.life, motion: 'wave', pierce: 99, knockback: 40, source: idx, stun: prm.stun ?? 0, tint: prm.stun ? 0xfff0a0 : undefined });
         }
         h.self.cameras.main.shake(80, 0.003);
         audio.play('slam');

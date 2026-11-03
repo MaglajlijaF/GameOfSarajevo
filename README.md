@@ -15,6 +15,7 @@ npm test               # unit tests (vitest)
 npm run build:web && npm run smoke        # headless browser smoke test (movement, menus)
 npm run build:web && npm run playthrough  # scripted full Kovači run + 45-enemy stress test
 npm run build:web && node scripts/campaign.mjs  # plays all 13 stages and checks every boss fights back
+npm run build:web && npm run features      # intro → tutorial, steam vents, stun, all 12 supers, creator, keyboard mode, ending
 ```
 
 The Windows `.exe` packaging (`npm run dist:win`) is configured but is scheduled for milestone 4.
@@ -32,22 +33,63 @@ To build locally on Windows instead, run `npm run dist:win`. The output goes in 
 
 ## Controls (rebindable in Postavke / Settings)
 
-| Action | Default |
+| Action | Mouse mode (default) | Keyboard-only mode |
+|---|---|---|
+| Move | A / D | A / D |
+| Jump / double jump | Space (hold for a higher jump) | Space |
+| Dash (brief invulnerability) | Shift | Shift |
+| Climb ladder | W / S | W / S |
+| Drop through a wooden platform | S + Space | S + Space |
+| Attack | aim with the mouse, hold left click | hold J: attacks the way you face; W tilts up, S (in the air) tilts down |
+| Super ability | Q | K |
+| Menus | mouse | arrow keys (or WASD) + Enter |
+| Pause | Esc | Esc |
+| Toggle fullscreen | F11 (desktop app), or Settings | |
+
+Switch modes in **Postavke → Nišanjenje** (Settings → Aiming). Switching moves attack and super between the mouse and J/K. Menus also work with the arrow keys and Enter in mouse mode.
+
+## Story, tutorial and ending
+
+- **First launch** plays the intro cutscene: thirteen self-appointed bosses have taken over the neighbourhoods, and you set out to beat them all and make Sarajevo a *Šeher* again. The tutorial follows.
+- **Tutorial** (*Vodič* on the menu, replayable): a short course covering moving, jumping, double jump, dash, ladders, dropping through platforms, attacking training dummies and steam grates. Gates open as you show each skill. It ends with cards on levels and weapons, the super ability, waves and bosses, and KM and the shop.
+- **Ending:** beating the Dobrinja boss for the first time plays the ending. Dawn breaks over the city, all 13 bosses celebrate, confetti and fireworks fall, and the title *SARAJEVO JE PONOVO ŠEHER!* appears. *Priča* replays the intro, and *Kraj priče* (once earned) replays the ending. Enter or click moves on, Esc skips.
+
+## Your own character
+
+*Lik* (Character) offers the six preset Sarajevans plus a creator. You choose a name (up to 12 letters, Bosnian letters supported), skin, hairstyle, hair colour, shirt and trousers. *Nasumično* randomises everything. The name appears in the HUD and in the story.
+
+## Hazards: sewer grates
+
+Every stage has sewer grates in shallow dips. You can stand on them, but every few seconds a grate glows and hisses, then bursts steam for about a second. The steam hurts you (by the stage's hazard damage) and **enemies too**: 25% of an enemy's health per hit, 3% for bosses. Luring enemies onto a grate is a valid tactic.
+
+## Super abilities
+
+Once per stage, at the level-3 level-up, you pick **one of three random super abilities**, each belonging to a different weapon. It starts charged, refills from kills (14) and boss damage (1 per 4% of boss health), and fires with Q (K in keyboard mode). Supers scale with stage difficulty.
+
+| Weapon | Super |
 |---|---|
-| Move | A / D |
-| Jump / double jump | Space (hold for a higher jump) |
-| Dash (brief invulnerability) | Shift |
-| Climb ladder | W / S |
-| Drop through a wooden platform | S + Space |
-| Aim / attack | Mouse / left click (hold to keep attacking) |
-| Pause | Esc |
-| Toggle fullscreen | F11 (desktop app), or Settings |
+| Tram handle | a tram rushes through the arena |
+| Ćevapi | three rings of skewers |
+| Džezva | hot-coffee fountain |
+| Fildžan | eight boomerang cups |
+| Umbrella | 5 s invulnerable with big umbrellas orbiting you |
+| Tepsija | earthquake: hits and stuns everything on screen |
+| Pigeon | 14 homing pigeons |
+| Bell | three huge sound rings that also clear projectiles |
+| Burek | two giant bouncing bureks |
+| Lokum | sugar cloud: heavy slow on screen |
+| Lantern | fireworks over every enemy, plus burning |
+| Sudžuk | lightning that jumps across the screen |
+
+**Tepsija's normal attack stuns** enemies it hits (0.9 s, +0.3 s per tier, with stars over their heads). Bosses get a third of that and can't be stunned again for 3 s, so they can't be locked down.
+
+**Enemy projectiles** fly at 72% of their old speed along the same paths: gravity is scaled with them, so arcs still land where they were aimed. They are drawn 4 px larger with a dark outline and a red rim, so they stand out from your own shots.
 
 ## Campaign
 
 | # | Stage | Look | Enemies | Boss |
 |---|---|---|---|---|
-| 1 | Kovači | old town, cobbles, grill coals | souvenir seller, pigeon feeder, delivery runner, crate porter | Master Coppersmith |
+| 1 | Kovači | old town, cobbles | souvenir seller, pigeon feeder, delivery runner, crate porter | Master Coppersmith |
 | 2 | Bistrik | steep hillside, stone walls, sunset, rose thorns | accordionist (wavy notes), gardener (flower-pot bombs), stair jogger (dash), neighbour (umbrella shield) | Fountain Keeper |
 | 3 | Skenderija | winter plaza, snow, ice | skateboarder, figure skater (spin), popcorn vendor, snowball kid | Skating Coach |
 | 4 | Marijin Dvor | glass towers at dusk, live wires | clerk (paper planes), scooter courier, security guard (shield), intern (homing paper) | Chief Executive |
@@ -61,7 +103,7 @@ To build locally on Windows instead, run `npm run dist:win`. The output goes in 
 | 12 | Alipašino Polje | blocks at night, graffiti paint | street baller, block DJ (buffs allies), graffiti artist, breakdancer | Block MC |
 | 13 | Dobrinja | airport, jet blast | baggage handler, flight attendant, ramp marshaller (sniper), drone pilot | Flight Captain (3 phases) |
 
-Each stage has its own tileset (ground, platforms and hazard), parallax backdrop, 5 generated arenas, a boss arena and a composed chiptune with a faster boss variant.
+Each stage has its own tileset (ground, platforms, sewer grates), parallax backdrop, 5 generated arenas, a boss arena and a composed chiptune with a faster boss variant.
 
 **Difficulty curve:** `difficulty` in `stages.json` rises from 1.15 to 5.11. Enemy and boss health scale with it, damage at about a third of that rate, and attack frequency up to 1.7×. Wave sizes, enemies alive at once and spawn speed also grow per stage. Rewards grow too, so later stages need shop upgrades.
 
@@ -111,4 +153,6 @@ electron/      Main process (atomic save.json writes plus .bak backup) and prelo
 - **Locked arenas:** a wave is one camera-locked arena. Enemies spawn in sub-batches inside it, with a maximum number alive at once that rises from wave 1 to wave 5. Clearing an arena heals 10% HP.
 - **KM:** only a boss kill pays KM. Defeat or quitting pays 0, never unlocks anything and only updates statistics.
 - **English:** an optional English file is included. All UI text comes from the language files, and Bosnian is the default.
+- **Grates everywhere:** the request was to replace the fire pits with steam sewers. All 13 stages now use sewer grates instead of their old static hazards (coals, thorns, paint, …), because a pit that just hurts on contact was the problem in every stage. The old styles remain in `themes.json` (`hazardStyle`) if a stage should get one back.
+- **Super timing:** offered at level 3 (the second level-up), so even short early stages get one.
 - **Content limits:** enemies are everyday roles (vendors, couriers, porters). There are no real people, logos, brands or war references, and no memorials or cemeteries are used as locations.

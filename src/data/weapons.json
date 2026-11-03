@@ -10,7 +10,7 @@
   "kisobran": { "kind": "orbit", "gender": "m", "color": "#e04a6a", "cooldown": 0.5, "damage": 7,
     "params": { "count": 2, "radius": 28, "spin": 4.0 }, "perTier": { "damage": 3, "count": 1, "radius": 4 }, "maxTier": 3 },
   "tepsija": { "kind": "shockwave", "gender": "f", "color": "#e0a23a", "cooldown": 1.6, "damage": 14,
-    "params": { "speed": 200, "life": 0.7 }, "perTier": { "damage": 6, "life": 0.2 }, "maxTier": 3 },
+    "params": { "speed": 200, "life": 0.7, "stun": 0.9 }, "perTier": { "damage": 6, "life": 0.2, "stun": 0.3 }, "maxTier": 3 },
   "golub": { "kind": "homing", "gender": "m", "color": "#9aa0b4", "cooldown": 1.3, "damage": 8,
     "params": { "speed": 170, "count": 2, "turn": 6 }, "perTier": { "damage": 3, "count": 1 }, "maxTier": 3 },
   "zvono": { "kind": "pulse", "gender": "n", "color": "#f2d64b", "cooldown": 2.4, "damage": 10,

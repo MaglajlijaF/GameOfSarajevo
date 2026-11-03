@@ -106,54 +106,30 @@ function platformTile(theme: ThemeDef): Pix {
   return pl;
 }
 
-/** Two animation frames of the stage hazard (non-solid, damages on contact). */
-function hazardTile(style: string, v: number, rng: Rng, accent: string): Pix {
+/**
+ * Sewer grate (the stage hazard). It is solid: you can walk on it, but every few
+ * seconds it bursts steam that hurts the player and enemies. Frame 0 is the idle
+ * grate, frame 1 the warning state just before a burst. The rim takes the
+ * theme's ground colour so each neighbourhood's grates fit its street.
+ */
+function sewerTile(v: number, rim: string): Pix {
   const h = new Pix(TS, TS);
-  const flames = (c1: string, c2: string, tip: string) => {
-    for (let x = 1; x < TS; x += 3) { const fh = ((x + v * 2) % 5) + 2; h.rect(x, 8 - fh, 1, fh, v ? c1 : c2); h.set(x, 8 - fh - 1, tip); }
-  };
-  switch (style) {
-    case 'water':
-      h.rect(0, 5, TS, 11, '#2a6ab8'); h.rect(0, 5, TS, 2, '#7ac0f0');
-      for (let x = (v * 3) % 6; x < TS; x += 6) h.rect(x, 5, 3, 1, '#ffffff');
-      break;
-    case 'ice':
-      h.rect(0, 4, TS, 12, '#9ad0f0');
-      for (let x = 0; x < TS; x += 4) { h.line(x, 4, x + 2, 0 + v, '#e8f8ff'); h.set(x + 1, 3, '#ffffff'); }
-      break;
-    case 'sparks':
-      h.rect(0, 10, TS, 6, '#3a3a40'); h.rect(0, 10, TS, 1, '#8a8a92');
-      for (let i = 0; i < 6; i++) { const x = rng.int(0, 15), y = rng.int(2, 9); h.set(x, y, v ? '#fff0a0' : '#7ad0f0'); h.set(x + 1, y - 1, '#ffffff'); }
-      h.line(0, 9 - v, 15, 7 + v, '#f2d64b');
-      break;
-    case 'thorns':
-      h.rect(0, 9, TS, 7, '#2a5a2a');
-      for (let x = 0; x < TS; x += 3) { h.line(x, 9, x + 1, 3 + ((x + v) % 3), '#3a7a3a'); h.set(x + 1, 3 + ((x + v) % 3), '#c0c4cc'); }
-      for (let x = 2; x < TS; x += 5) h.set(x, 6, accent);
-      break;
-    case 'cement':
-      h.rect(0, 6, TS, 10, '#9a9a96'); h.rect(0, 6, TS, 1, '#c8c8c0');
-      for (let i = 0; i < 4; i++) h.circle(rng.int(2, 13), 9 + v, 1, '#7a7a76');
-      break;
-    case 'paint':
-      h.rect(0, 7, TS, 9, accent); h.rect(0, 7, TS, 1, shade(accent, 0.4));
-      for (let x = (v * 2) % 5; x < TS; x += 5) h.circle(x, 6, 1, accent);
-      break;
-    case 'tar':
-      h.rect(0, 6, TS, 10, '#1a1a1e'); h.rect(0, 6, TS, 1, '#3a3a40');
-      for (let i = 0; i < 3; i++) h.circle(rng.int(2, 13), 8 + v, 1, '#4a4a52');
-      break;
-    case 'jet':
-      h.rect(0, 12, TS, 4, '#3a3c40');
-      flames('#7ad0f0', '#ffffff', '#c8f0ff');
-      break;
-    default: // coals
-      h.rect(0, 6, TS, 10, '#3a2a2a');
-      for (let i = 0; i < 14; i++) { const x = rng.int(0, TS - 2), y = rng.int(8, 14); h.rect(x, y, 2, 2, rng.chance(0.5) ? '#ff7a2a' : '#d83a3a'); }
-      flames('#f2d64b', '#ff9a3a', '#fff0a0');
-      h.rect(0, 5, TS, 1, '#6a6a72');
-      for (let x = 0; x < TS; x += 3) h.rect(x, 5, 1, 3, '#6a6a72');
+  const iron = '#4a4e5a', ironL = '#7a7f8c', ironD = '#2a2c34';
+  h.rect(0, 0, TS, TS, ironD);
+  h.rect(0, 0, TS, 2, shade(rim, -0.1));
+  h.rect(0, 0, TS, 1, shade(rim, 0.25));
+  h.rect(0, 2, TS, 1, '#1a1420');
+  h.rect(1, 3, TS - 2, 12, iron);
+  h.rect(1, 3, TS - 2, 1, ironL);
+  // slots between the bars
+  for (let x = 2; x < TS - 2; x += 3) {
+    h.rect(x, 5, 2, 8, v ? '#c8ccd8' : '#101014');
+    if (!v) h.set(x, 11, '#2a4a3a'); // a glint of sewer water
+    else h.set(x, 5, '#ffffff');
   }
+  h.rect(1, 14, TS - 2, 1, ironD);
+  h.rect(0, 15, TS, 1, '#1a1420');
+  if (v) { h.set(4, 1, '#ffffff'); h.set(10, 0, '#ffffff'); h.set(7, 1, '#e8e8f0'); }
   return h;
 }
 
@@ -188,8 +164,7 @@ export function tilesetFrames(theme: ThemeDef, seed: number): Pix[] {
   ld.rect(3, 0, 1, TS, shade(wood, 0.25)); ld.rect(11, 0, 1, TS, shade(wood, 0.25));
   for (const y of [2, 7, 12]) { ld.rect(5, y, 6, 2, shade(wood, -0.1)); ld.rect(5, y + 1, 6, 1, shade(wood, -0.35)); }
   frames.push(ld);
-  const accent = theme.accent ?? '#e8483a';
-  frames.push(hazardTile(theme.hazardStyle, 0, rng, accent), hazardTile(theme.hazardStyle, 1, rng, accent));
+  frames.push(sewerTile(0, theme.groundTop), sewerTile(1, theme.groundTop));
   // GATE
   const g = new Pix(TS, TS);
   g.rect(5, 0, 6, TS, '#d83a3a');
